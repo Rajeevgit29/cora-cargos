@@ -1,6 +1,6 @@
-# Cora Cargos — The Portfolio Edition
+# Kora Kaagaz — The Portfolio Edition
 
-A portfolio site for an independent creative studio, built as an interactive newspaper. Visitors start at a folded paper on a table. As they scroll, it unfolds in 3D, the camera settles over the open spread, and the printed page dissolves into the live HTML site.
+A portfolio site for an independent creative studio, built as an interactive newspaper. Visitors start at a folded paper on a walnut desk in morning light. As they scroll, it unfolds in 3D, the camera settles over the open spread, and the printed page dissolves into the live HTML site.
 
 ```bash
 npm install
@@ -9,7 +9,7 @@ npm run build      # static output in dist/ (deploy anywhere)
 npm run preview    # serve the production build
 ```
 
-Testing switches: `?intro=0` skips the 3D intro, `?intro=1` forces it, `?motion=reduce` simulates reduced motion.
+Testing switches: `?intro=0` skips the 3D intro, `?intro=1` forces it, `?motion=reduce` simulates reduced motion, `?desk=procedural` ignores a configured desk photo, `?deskPhoto=/path.jpg&deskElevation=66` previews a photo without editing config.
 
 ## Editing content
 
@@ -31,16 +31,16 @@ src/intro/
     config.js          sheet size, crease radii, quality tiers, plate sizes
     timeline.js        THE CHOREOGRAPHY: folds, paper motion, camera, handoff
     tracks.js          easing + monotone keyframe interpolation
-    PaperGeometry.js   the sheet mesh and its fold deformation
-    paperMaterial.js   crease shading + "unlit" blend for the final frame
+    PaperGeometry.js   nested sheets and their fold deformation
+    paperMaterial.js   creases, ink and stock variation, edge sheen, desk light, "unlit" handoff blend
     layout.js          the handoff mapping between viewport pixels and the sheet
     rasterize.js       a small DOM → canvas printer
     textures.js        paints the outside (cover, contents page) and inside
-    table.js           wood texture, pencil, cup
+    table.js           the desk: projected photograph, or procedural walnut + window gobo + cup and pencil
     Scene.js           three.js scene, lights, camera, render-on-demand
 ```
 
-- **Real folds.** The sheet is one deforming mesh. The spine fold (A) and the half fold (B) each bend the paper around a crease radius, with a gentle curl and gravity droop, so it reads as flexible paper rather than rigid board. Folded layers ride along the bend's normal and stack without intersecting. Both sides are printed: the cover, an "Inside this edition" page shown by the first unfold, a back page, and the inside spread.
+- **Real folds.** The paper is three nested sheets that fold together, so its edges show layers. The spine fold (A) and the half fold (B) each bend the paper around a crease radius, with a gentle curl and gravity droop, so it reads as flexible paper rather than rigid board. Folded layers ride along the bend's normal and stack without intersecting. Both sides are printed: the cover, an "Inside this edition" page shown by the first unfold, a back page, and the inside spread.
 - **Scroll-driven and reversible.** Progress comes from GSAP ScrollTrigger over a pinned `250vh` (`200vh` on phones), lightly smoothed. Nothing is time-based, and scrolling up refolds the paper.
 - **Seamless handoff.** The front page is printed onto the inside of the sheet from its *live HTML layout*: every word, rule and image is drawn where the browser placed it. The final camera frames the sheet so that this mapping is exact (`layout.js`), and lighting blends out so the colours match. The front page waits underneath, sticky, while the canvas dissolves. In testing, the final 3D frame and the HTML differed only by sub-pixel edges and paper grain.
 - **Tuning.** Retime folds, camera keys and the handoff in `timeline.js`. Each group is independent.
@@ -48,6 +48,62 @@ src/intro/
 ### Rules for the front page (it is printed)
 
 The printer reproduces boxes, background colours, borders (solid, double, dotted, dashed), text, `<img>` with `object-fit`, opacity and `.ink-link` underlines. Pseudo-element content, gradients, shadows and transforms are **not** printed. Keep visible front-page details to that subset, or the printed version will differ slightly during the dissolve. Mark anything that should stay off the paper with `data-print="skip"`.
+
+## Opening scene assets
+
+> **Status:** Higgsfield was connected, but the account had 0 credits, so **no images were generated there**. The desk and newsprint now in `public/assets/` are procedural stand-ins made by `scripts/make-materials.py`. Generate the assets below when you have credits, then drop them in.
+
+### 1. Desk photograph (replaces the stand-in desk, cup and pencil)
+
+Generate at **16:9, 2560 px wide or larger**, with a photorealistic still-life model (for example GPT Image or Soul Location in Higgsfield):
+
+```
+Photorealistic editorial still-life photograph of a vintage creative studio desk, near-overhead camera with a subtle perspective angle, dark walnut tabletop with fine natural wood grain and understated wear, warm morning daylight entering from the upper left, soft elongated window-frame shadows, large uncluttered central area reserved for a newspaper, a partially cropped ivory ceramic espresso cup and saucer at the far upper-right edge, a single worn graphite pencil near the left edge, restrained styling, premium independent design studio atmosphere, realistic material texture, natural photographic color, sharp tabletop details, subtle shadows, landscape composition. No newspaper, no books, no lettering, no logos, no hands, no excessive props, no illustration, no glossy CGI appearance.
+```
+
+Then:
+
+```bash
+python3 scripts/make-materials.py --desk-photo ~/Downloads/your-desk.png
+```
+
+This writes `public/assets/desk/desk-photo.jpg` (2560 px) and `desk-photo-1280.jpg` (phones). In `src/intro/newspaper/config.js` set `DESK.photo.src` and `DESK.photo.compact` to those paths.
+
+**Matching the perspective.** The photo is projected onto the desk plane from the opening camera, so the first frame is the photograph itself and later camera moves get consistent ground-plane parallax.
+- Preview with `?deskPhoto=/assets/desk/desk-photo.jpg&deskElevation=66` and adjust `deskElevation` until the paper sits naturally on the desk. Overhead ≈ 80–85°, the prompt's "subtle perspective" ≈ 60–70°. Then put that value in `DESK.photo.elevation`.
+- Set `DESK.photo.sun` to the photo's light direction. The default is upper-left daylight.
+- The paper picks up the photograph's own light pattern (window shadows, falloff) through a light map, so it is lit like the desk beneath it.
+- Keep the centre clear. The folded paper starts just right of centre, and the open spread covers roughly the middle of the frame (measured at about 20–75% of its width and 22–75% of its height on laptop screens). Keep the cup in the upper-right corner and the pencil within the outer ~12% at the left, outside that footprint.
+
+### 2. Newsprint (paper texture for both the 3D sheet and the website background)
+
+Generate at **1:1**:
+
+```
+Seamless tileable flat top-down scan of warm ivory newsprint paper, even diffuse lighting, fine natural paper fibres and very restrained tonal variation, matte uncoated stock. No print, no text, no folds, no creases, no stains, no shadows, no vignette, uniform exposure, no texture repetition.
+```
+
+```bash
+python3 scripts/make-materials.py --paper ~/Downloads/your-newsprint.png
+```
+
+The script makes the tile seamless, reduces it to ±1% tonal variation and sets its average colour to exactly `--paper`. That keeps text readable, and the 3D sheet still matches the HTML at the handoff.
+
+### 3. Walnut texture (optional: improves the procedural desk if you keep it)
+
+Generate at **3:2**:
+
+```
+Seamless top-down flat photograph of a dark walnut desk surface, fine natural straight grain with occasional cathedral figure, satin oil finish, understated wear, even diffuse lighting. No objects, no shadows, no reflections, no vignette, no text.
+```
+
+```bash
+python3 scripts/make-materials.py --walnut ~/Downloads/your-walnut.png
+```
+
+### What stays under code control
+
+The newspaper is never generated imagery. Its geometry, folds, print, typography, creases and ink effects are all live. The masthead and every line of text come from `src/content.js`, so lettering is always crisp and editable.
 
 ## Accessibility and fallbacks
 

@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────
-   Cora Cargos — base: tokens, type, shared editorial pieces
+   Kora Kaagaz — base: tokens, type, shared editorial pieces
    ───────────────────────────────────────────────────────────── */
 
 :root {
@@ -12,7 +12,7 @@
   --rule-soft: rgba(29, 27, 25, 0.2);
   --burgundy: #7b2d35;
   --burgundy-ink: #6a2129;
-  --table: #2a1d14;
+  --table: #1a110b; /* walnut, behind the intro canvas */
 
   --f-mast: 'Playfair Display Variable', 'Playfair Display', Georgia, serif;
   --f-display: 'Instrument Serif', 'Times New Roman', Georgia, serif;
@@ -42,8 +42,9 @@ html {
 body {
   margin: 0;
   background-color: var(--paper);
-  background-image: var(--grain, none);
-  background-size: 256px 256px;
+  /* Newsprint tile — also printed onto the 3D sheet, aligned to the page. */
+  background-image: url('/assets/paper/newsprint.jpg');
+  background-size: 384px 384px;
   color: var(--ink);
   font-family: var(--f-body);
   font-size: 17px;

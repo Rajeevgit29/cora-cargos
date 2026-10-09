@@ -1,5 +1,5 @@
-// One paper-grain tile shared by the CSS page background and the 3D paper
-// textures, so the printed sheet and the live page have the same surface.
+// Procedural paper grain: the fallback stock texture if the newsprint tile
+// (public/assets/paper/newsprint.jpg) fails to load.
 
 let tile = null;
 
@@ -37,12 +37,4 @@ export function grainTile() {
   }
   tile = canvas;
   return tile;
-}
-
-export function installGrain() {
-  try {
-    document.documentElement.style.setProperty('--grain', `url(${grainTile().toDataURL('image/png')})`);
-  } catch {
-    /* non-essential */
-  }
 }

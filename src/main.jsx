@@ -16,10 +16,8 @@ import './styles/case.css';
 import './styles/intro.css';
 import './styles/plates.css';
 
-import { installGrain } from './lib/grain.js';
 import App from './App.jsx';
 
-installGrain();
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 createRoot(document.getElementById('root')).render(

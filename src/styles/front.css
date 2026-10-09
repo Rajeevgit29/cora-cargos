@@ -9,8 +9,8 @@
   z-index: 50;
   height: var(--nav-h);
   background-color: var(--paper);
-  background-image: var(--grain, none);
-  background-size: 256px 256px;
+  background-image: url('/assets/paper/newsprint.jpg');
+  background-size: 384px 384px;
   border-bottom: 1px solid var(--ink);
   transform: translateY(-101%);
   visibility: hidden;

@@ -84,7 +84,7 @@ function bendCurve(out, n, step, theta, radius, length, curl, twistFactor) {
 }
 
 export class PaperGeometry {
-  constructor([nx, nz]) {
+  constructor([nx, nz], layerCount = SHEET.layers) {
     if (nx % 2 || nz % 2) throw new Error('Paper segments must be even so creases fall on vertices.');
     const W = SHEET.width;
     const H = SHEET.height;
@@ -93,37 +93,15 @@ export class PaperGeometry {
     const count = cols * rows;
     Object.assign(this, { nx, nz, cols, rows, count, W, H, dx: W / nx, dz: H / nz });
 
-    this.restX = new Float32Array(count);
-    this.restZ = new Float32Array(count);
-    const positions = new Float32Array(count * 3);
+    // Shared topology: every sheet uses the same UVs and triangles.
     const uvs = new Float32Array(count * 2);
-    const J = SHEET.edgeJitter;
-
     for (let j = 0; j < rows; j++) {
       for (let i = 0; i < cols; i++) {
         const k = j * cols + i;
-        const u = i / nx;
-        const v = j / nz;
-        let x = -W / 2 + u * W;
-        let z = -H / 2 + v * H;
-        // Slightly irregular cut edges and softened corners.
-        if (i === 0) x += J * noise1(j * 0.37 + 3.1);
-        if (i === nx) x -= J * noise1(j * 0.41 + 9.7);
-        if (j === 0) z += J * noise1(i * 0.29 + 1.3);
-        if (j === nz) z -= J * noise1(i * 0.33 + 5.9);
-        if ((i === 0 || i === nx) && (j === 0 || j === nz)) {
-          x += (i === 0 ? 1 : -1) * J * 0.9;
-          z += (j === 0 ? 1 : -1) * J * 0.9;
-        }
-        this.restX[k] = x;
-        this.restZ[k] = z;
-        positions[k * 3] = x;
-        positions[k * 3 + 2] = z;
-        uvs[k * 2] = u;
-        uvs[k * 2 + 1] = 1 - v;
+        uvs[k * 2] = i / nx;
+        uvs[k * 2 + 1] = 1 - j / nz;
       }
     }
-
     const index = new (count > 65535 ? Uint32Array : Uint16Array)(nx * nz * 6);
     let o = 0;
     for (let j = 0; j < nz; j++) {
@@ -140,13 +118,48 @@ export class PaperGeometry {
         index[o++] = d;
       }
     }
+    const uvAttr = new THREE.BufferAttribute(uvs, 2);
+    const indexAttr = new THREE.BufferAttribute(index, 1);
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3).setUsage(THREE.DynamicDrawUsage));
-    geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-    geometry.setIndex(new THREE.BufferAttribute(index, 1));
-    geometry.computeVertexNormals();
-    this.geometry = geometry;
+    /*
+     * Layers, outermost first. In the open state they lie stacked with the
+     * innermost sheet on top (it carries the printed spread); each sits one
+     * sheet-thickness above the previous. Only the free edges differ between
+     * sheets — creases must coincide or the stack would tear.
+     */
+    const J = SHEET.edgeJitter;
+    this.layers = Array.from({ length: layerCount }, (_, layer) => {
+      const restX = new Float32Array(count);
+      const restZ = new Float32Array(count);
+      const seed = layer * 7.31;
+      const inner = layer === layerCount - 1;
+      const reach = inner ? 0 : (layer % 2 ? -0.6 : 0.8) * J; // outer sheets peek out a little
+      for (let j = 0; j < rows; j++) {
+        for (let i = 0; i < cols; i++) {
+          const k = j * cols + i;
+          let x = -W / 2 + (i / nx) * W;
+          let z = -H / 2 + (j / nz) * H;
+          if (i === 0) x += J * noise1(j * 0.37 + 3.1 + seed) - reach;
+          if (i === nx) x -= J * noise1(j * 0.41 + 9.7 + seed) - reach;
+          if (j === 0) z += J * noise1(i * 0.29 + 1.3 + seed) - reach;
+          if (j === nz) z -= J * noise1(i * 0.33 + 5.9 + seed) - reach;
+          if ((i === 0 || i === nx) && (j === 0 || j === nz)) {
+            x += (i === 0 ? 1 : -1) * J * 0.9;
+            z += (j === 0 ? 1 : -1) * J * 0.9;
+          }
+          restX[k] = x;
+          restZ[k] = z;
+        }
+      }
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3).setUsage(THREE.DynamicDrawUsage));
+      geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(count * 3), 3).setUsage(THREE.DynamicDrawUsage));
+      geometry.setAttribute('uv', uvAttr);
+      geometry.setIndex(indexAttr);
+      return { restX, restZ, geometry, base: layer * SHEET.layerGap };
+    });
+    this.topHeight = (layerCount - 1) * SHEET.layerGap;
 
     // Pre-allocated curve buffers: one per curl sample, for each fold.
     this.curvesA = Array.from({ length: CURL_SAMPLES }, () => new Float32Array((nx / 2 + 1) * 4));
@@ -155,26 +168,42 @@ export class PaperGeometry {
   }
 
   update(state) {
-    const { nx, nz, cols, rows, W, H, dx, dz } = this;
-    const { thetaA, thetaB, curl, sag, wobble } = state;
-    const iA = nx / 2; // crease column
-    const jB = nz / 2; // crease row
+    const { nx, nz, dx } = this;
+    const { thetaA, thetaB, curl } = state;
     const twist = curl.twist;
-
     for (let s = 0; s < CURL_SAMPLES; s++) {
       const tf = 1 + (twist * s) / (CURL_SAMPLES - 1);
-      bendCurve(this.curvesA[s], iA, dx, thetaA, SHEET.creaseRadiusA, W / 2, curl, tf);
-      bendCurve(this.curvesB[s], jB, dz, thetaB, SHEET.creaseRadiusB, H / 2, curl, tf);
+      bendCurve(this.curvesA[s], nx / 2, dx, thetaA, SHEET.creaseRadiusA, this.W / 2, curl, tf);
+      bendCurve(this.curvesB[s], nz / 2, this.dz, thetaB, SHEET.creaseRadiusB, this.H / 2, curl, tf);
     }
+    this.layers.forEach((layer, i) => this.#deform(layer, state, i === 0));
 
-    const pos = this.geometry.attributes.position.array;
+    // Sheets are parallel offset surfaces: compute normals once, share them.
+    const lead = this.layers[0].geometry;
+    lead.computeVertexNormals();
+    const n = lead.attributes.normal.array;
+    for (let i = 1; i < this.layers.length; i++) {
+      const attr = this.layers[i].geometry.attributes.normal;
+      attr.array.set(n);
+      attr.needsUpdate = true;
+    }
+    return this.bounds;
+  }
+
+  #deform(layer, state, trackBounds) {
+    const { nx, nz, cols, rows, W, H, dx, dz } = this;
+    const { sag, wobble } = state;
+    const iA = nx / 2; // crease column
+    const jB = nz / 2; // crease row
+    const base = layer.base;
+    const pos = layer.geometry.attributes.position.array;
     const b = this.bounds;
-    b.minX = b.minZ = b.minY = Infinity;
-    b.maxX = b.maxZ = -Infinity;
+    if (trackBounds) {
+      b.minX = b.minZ = b.minY = Infinity;
+      b.maxX = b.maxZ = -Infinity;
+    }
     const out = [0, 0, 0, 0];
-
     const sampleCurve = (curves, k, t) => {
-      // t ∈ [0, 1] along the curl samples
       const f = t * (CURL_SAMPLES - 1);
       const s0 = Math.min(CURL_SAMPLES - 2, Math.floor(f));
       const w = f - s0;
@@ -191,21 +220,22 @@ export class PaperGeometry {
     for (let j = 0; j < rows; j++) {
       for (let i = 0; i < cols; i++) {
         const k = j * cols + i;
-        const rx = this.restX[k];
-        const rz = this.restZ[k];
+        const rx = layer.restX[k];
+        const rz = layer.restZ[k];
         let x = rx;
-        let y = 0;
+        let y = base;
         let z = rz;
 
         // Fold A — the spine. The flap is x < 0; distance from crease is -x.
+        // Points are carried along the curve's normal by their height in the
+        // stack, so inner sheets wrap inside outer ones.
         if (i < iA) {
           const tz = rz / (H / 2);
           const c = sampleCurve(this.curvesA, iA - i, tz * tz);
           const extra = -rx - (iA - i) * dx; // edge jitter, carried along the tangent
-          const tu = c[3]; // tangent = (ny, -nu) rotated: (cos α, sin α) = (n.y, -n.x)
-          const ty = -c[2];
-          x = -(c[0] + extra * tu);
-          y = c[1] + extra * ty;
+          // tangent = (cos α, sin α) = (n.y, -n.x)
+          x = -(c[0] + extra * c[3] + base * c[2]);
+          y = c[1] - extra * c[2] + base * c[3];
         }
 
         // Fold B — the half fold, applied to the result of fold A. Flap is z < 0.
@@ -228,20 +258,19 @@ export class PaperGeometry {
         pos[k * 3] = x;
         pos[k * 3 + 1] = y;
         pos[k * 3 + 2] = z;
-        if (x < b.minX) b.minX = x;
-        if (x > b.maxX) b.maxX = x;
-        if (z < b.minZ) b.minZ = z;
-        if (z > b.maxZ) b.maxZ = z;
-        if (y < b.minY) b.minY = y;
+        if (trackBounds) {
+          if (x < b.minX) b.minX = x;
+          if (x > b.maxX) b.maxX = x;
+          if (z < b.minZ) b.minZ = z;
+          if (z > b.maxZ) b.maxZ = z;
+          if (y < b.minY) b.minY = y;
+        }
       }
     }
-
-    this.geometry.attributes.position.needsUpdate = true;
-    this.geometry.computeVertexNormals();
-    return b;
+    layer.geometry.attributes.position.needsUpdate = true;
   }
 
   dispose() {
-    this.geometry.dispose();
+    this.layers.forEach((l) => l.geometry.dispose());
   }
 }

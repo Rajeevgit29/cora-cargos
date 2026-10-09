@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { site } from '../content.js';
 import { isCompact } from '../lib/env.js';
-import { QUALITY } from './newspaper/config.js';
-import { cssVar, paintInside, paintOutside } from './newspaper/textures.js';
+import { DESK, QUALITY } from './newspaper/config.js';
+import { cssVar, paintFiller, paintInside, paintOutside, setPaperTile } from './newspaper/textures.js';
+import { loadImage } from '../lib/images.js';
 import { TIMELINE } from './newspaper/timeline.js';
 import { ease, span } from './newspaper/tracks.js';
 
@@ -39,6 +40,30 @@ function imagesReady(root) {
 }
 
 const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
+
+/**
+ * Desk assets: a photographed desk if one has been added (see README), else the
+ * procedural walnut stand-in. `?desk=procedural` / `?desk=photo` force a mode.
+ */
+async function loadDesk(compact) {
+  const params = new URLSearchParams(location.search);
+  const force = params.get('desk');
+  // Testing hooks: ?deskPhoto=/path.jpg&deskElevation=60 try a photograph without editing config.
+  if (params.get('deskPhoto')) {
+    const photo = await loadImage(params.get('deskPhoto'));
+    if (params.get('deskElevation')) DESK.photo.elevation = Number(params.get('deskElevation'));
+    if (photo) return { photo };
+  }
+  if (force !== 'procedural' && DESK.photo.src) {
+    const photo = (compact && (await loadImage(DESK.photo.compact))) || (await loadImage(DESK.photo.src));
+    if (photo) return { photo };
+    console.warn(`Desk photo ${DESK.photo.src} could not be loaded; using the procedural desk.`);
+  }
+  const p = DESK.procedural;
+  const [wood, detail] = await Promise.all([loadImage(compact ? p.woodCompact : p.wood), compact ? null : loadImage(p.detail)]);
+  if (!wood) throw new Error('Desk texture failed to load');
+  return { wood, detail };
+}
 
 /**
  * The pinned opening scene. Lives inside the `.pin` container next to the
@@ -135,7 +160,8 @@ export default function Intro({ pinRef, frontRef, spacerRef, afterRef, platesRef
       const fpRect = fp.getBoundingClientRect();
       const sources = [{ el: fp, originY: fpRect.top }];
       if (afterRef.current) sources.push({ el: afterRef.current, originY: pin.getBoundingClientRect().bottom - fpRect.height });
-      const inside = paintInside({ layout: scene.layout, scale: scene.insideScale(), sources, filler: platesRef.current?.filler });
+      const pageOffsetY = (pin.offsetTop || 0) + (spacerRef.current?.offsetHeight || 0);
+      const inside = paintInside({ layout: scene.layout, scale: scene.insideScale(), sources, filler: platesRef.current?.filler, pageOffsetY });
       scene.setInsideCanvas(inside);
     };
     const schedulePrint = () => {
@@ -197,13 +223,19 @@ export default function Intro({ pinRef, frontRef, spacerRef, afterRef, platesRef
       try {
         // three.js loads as its own chunk, in parallel with fonts and images.
         const scenePromise = import('./newspaper/Scene.js');
+        const deskPromise = loadDesk(quality.compact);
+        const tilePromise = loadImage(DESK.paperTile.src).then(setPaperTile);
         await fontsReady();
         await Promise.race([Promise.all([imagesReady(platesRef.current?.root), imagesReady(frontRef.current)]), timeout(6000)]);
         if (disposed) return;
-        const { NewspaperScene } = await scenePromise;
+        const [{ NewspaperScene }, desk] = await Promise.all([scenePromise, deskPromise, tilePromise]);
         if (disposed) return;
         const outside = paintOutside(quality.outsideTexture, platesRef.current);
-        scene = new NewspaperScene(canvas, { quality, outsideCanvas: outside, paperColor: cssVar('--paper', '#f2ecdf') });
+        const filler = paintFiller(quality.compact ? 1024 : 2048);
+        // Testing hook: ?deskElevation=66&straight=1 previews a photo-style camera on the procedural desk.
+        const qp = new URLSearchParams(location.search);
+        const camera = desk.photo || !qp.get('deskElevation') ? {} : { startElevation: Number(qp.get('deskElevation')), straight: qp.has('straight'), holdWide: qp.has('holdWide') };
+        scene = new NewspaperScene(canvas, { quality, outsideCanvas: outside, fillerCanvas: filler, paperColor: cssVar('--paper', '#f2ecdf'), desk, camera });
         canvas.addEventListener('webglcontextlost', onContextLost);
         resize(true);
         trigger = ScrollTrigger.create({

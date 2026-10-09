@@ -1,4 +1,4 @@
-import { PLATES } from './config.js';
+import { DESK, PLATES } from './config.js';
 import { rasterize } from './rasterize.js';
 import { grainTile } from '../../lib/grain.js';
 
@@ -13,14 +13,31 @@ function makeCanvas(w, h) {
   return c;
 }
 
-/** Base stock: ivory, grain at the same CSS-pixel scale as the page background. */
-function paintStock(ctx, w, h, cssScale) {
+let paperTile = null;
+/** The newsprint tile that is also the page background (see base.css). */
+export function setPaperTile(img) {
+  paperTile = img;
+}
+
+/**
+ * Base stock: ivory newsprint at the same CSS-pixel scale as the page
+ * background. `offset` is the page position (CSS px) of the canvas origin, so
+ * the printed fibres line up with the live page's at the handoff.
+ */
+function paintStock(ctx, w, h, cssScale, offset = [0, 0]) {
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = cssVar('--paper', '#f2ecdf');
   ctx.fillRect(0, 0, w, h);
   ctx.setTransform(cssScale, 0, 0, cssScale, 0, 0);
-  ctx.fillStyle = ctx.createPattern(grainTile(), 'repeat');
+  if (paperTile) {
+    const pattern = ctx.createPattern(paperTile, 'repeat');
+    const k = DESK.paperTile.cssSize / paperTile.naturalWidth;
+    pattern.setTransform(new DOMMatrix().translate(-offset[0], -offset[1]).scale(k));
+    ctx.fillStyle = pattern;
+  } else {
+    ctx.fillStyle = ctx.createPattern(grainTile(), 'repeat');
+  }
   ctx.fillRect(0, 0, w / cssScale + 1, h / cssScale + 1);
   ctx.restore();
 }
@@ -90,9 +107,9 @@ function greek(ctx, x, y, w, h, seed = 3) {
       ctx.globalAlpha = 0.7;
       ctx.fillRect(x + pad, cy, lw, 0.8);
       cy += 12;
-      ctx.globalAlpha = 0.42;
-      ctx.fillRect(x + pad, cy, lw * (0.55 + rnd() * 0.35), 5.5);
-      ctx.fillRect(x + pad, cy + 9, lw * (0.3 + rnd() * 0.3), 5.5);
+      ctx.globalAlpha = 0.24;
+      ctx.fillRect(x + pad, cy, lw * (0.55 + rnd() * 0.35), 3.6);
+      ctx.fillRect(x + pad, cy + 8, lw * (0.3 + rnd() * 0.3), 3.6);
       cy += 26;
       para = 4 + Math.floor(rnd() * 6);
       continue;
@@ -112,13 +129,13 @@ function greek(ctx, x, y, w, h, seed = 3) {
  *   sources: [{ el, originY }] — DOM roots and the viewport Y that corresponds
  *            to the top of the handoff frame for that root.
  */
-export function paintInside({ layout, scale, sources, filler }) {
+export function paintInside({ layout, scale, sources, filler, pageOffsetY = 0 }) {
   const { x0, y0, sheetPxW, sheetPxH, vw } = layout;
   const cw = Math.round(sheetPxW * scale);
   const ch = Math.round(sheetPxH * scale);
   const canvas = makeCanvas(cw, ch);
   const ctx = canvas.getContext('2d');
-  paintStock(ctx, cw, ch, scale);
+  paintStock(ctx, cw, ch, scale, [x0, y0 + pageOffsetY]);
 
   if (layout.mode === 'page') {
     // Phones zoom into the right-hand page; give the left page its own layout.
@@ -141,5 +158,26 @@ export function paintInside({ layout, scale, sources, filler }) {
   }
 
   ageEdges(ctx, cw, ch, Math.min(cw, ch) * 0.012, 0.07);
+  return canvas;
+}
+
+/** Printed stock for the sheets' hidden faces, glimpsed only at their edges. */
+export function paintFiller(size) {
+  const cw = size;
+  const ch = Math.round((size * 2) / 3);
+  const canvas = makeCanvas(cw, ch);
+  const ctx = canvas.getContext('2d');
+  const css = cw / 2400; // treat the spread as 2400 css px wide
+  paintStock(ctx, cw, ch, css);
+  ctx.setTransform(css, 0, 0, css, 0, 0);
+  ctx.globalAlpha = 0.7;
+  const cols = 5;
+  for (let page = 0; page < 2; page++) {
+    const px = page * 1200 + 70;
+    const colW = (1200 - 140) / cols;
+    for (let c = 0; c < cols; c++) greek(ctx, px + c * colW, 90, colW, 1600 - 160, 3 + page * 11 + c * 5);
+  }
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ageEdges(ctx, cw, ch, cw * 0.014);
   return canvas;
 }

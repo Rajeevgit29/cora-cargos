@@ -1,6 +1,6 @@
 /*
  * ─────────────────────────────────────────────────────────────────────────────
- *  CORA CARGOS — EDITION CONTENT
+ *  KORA KAAGAZ — EDITION CONTENT
  *  Everything a visitor reads lives in this file: studio details, projects,
  *  case studies, services and contact links. Edit here; the newspaper, the
  *  printed 3D intro and the case-study pages all update from this source.
@@ -17,7 +17,7 @@
  */
 
 export const site = {
-  name: 'Cora Cargos',
+  name: 'Kora Kaagaz',
   descriptor: 'Independent Creative Studio',
   sampleNotice: true,
 
@@ -30,13 +30,13 @@ export const site = {
   },
 
   contact: {
-    email: 'hello@coracargos.com', // REPLACE with your studio address
-    enquirySubject: 'New story for Cora Cargos',
+    email: 'hello@korakaagaz.com', // REPLACE with your studio address
+    enquirySubject: 'New story for Kora Kaagaz',
     socials: [
       // REPLACE handles and URLs with your own profiles
-      { label: 'Instagram', handle: '@coracargos', url: 'https://www.instagram.com/coracargos' },
-      { label: 'LinkedIn', handle: 'Cora Cargos', url: 'https://www.linkedin.com/company/coracargos' },
-      { label: 'Behance', handle: 'coracargos', url: 'https://www.behance.net/coracargos' },
+      { label: 'Instagram', handle: '@korakaagaz', url: 'https://www.instagram.com/korakaagaz' },
+      { label: 'LinkedIn', handle: 'Kora Kaagaz', url: 'https://www.linkedin.com/company/korakaagaz' },
+      { label: 'Behance', handle: 'korakaagaz', url: 'https://www.behance.net/korakaagaz' },
     ],
   },
 };
@@ -44,7 +44,7 @@ export const site = {
 export const frontPage = {
   kicker: 'Front Page — Studio News',
   headline: 'Good ideas deserve front-page attention.',
-  deck: 'Cora Cargos is an independent creative studio making brands, websites and campaigns that people stop to read.',
+  deck: 'Kora Kaagaz is an independent creative studio making brands, websites and campaigns that people stop to read.',
   intro: [
     'We work with founders, cultural institutions and growing companies who need their story told clearly — and noticed. Identity, editorial design, digital experiences and campaigns, carried by one editorial eye from first sketch to final print.',
     'This edition collects selected stories from the studio. Turn the page for the work, the people behind it, and how to commission a front page of your own.',
@@ -244,7 +244,7 @@ export const studio = {
   columns: [
     {
       title: 'Who we are',
-      text: 'Cora Cargos is an independent creative studio for brands, institutions and founders who have something worth saying. We design identities, publications, websites and campaigns, and we treat each one like a story that deserves a careful edit.',
+      text: 'Kora Kaagaz is an independent creative studio for brands, institutions and founders who have something worth saying. We design identities, publications, websites and campaigns, and we treat each one like a story that deserves a careful edit.',
     },
     {
       title: 'Our approach',

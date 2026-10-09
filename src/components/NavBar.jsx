@@ -17,7 +17,7 @@ export default function NavBar({ visible, active, onNavigate }) {
       <div className="nav__inner">
         <a className="nav__brand" href="#front" onClick={go('front')} aria-label={`${site.name} — front page`}>
           <span className="nav__brand-full">{site.name}</span>
-          <span className="nav__brand-short" aria-hidden="true">CC</span>
+          <span className="nav__brand-short" aria-hidden="true">KK</span>
         </a>
         <nav aria-label="Sections">
           <ul className="nav__links">

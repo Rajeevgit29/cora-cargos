@@ -1,17 +1,27 @@
 import * as THREE from 'three';
-import { SHEET, CAMERA_FOV } from './config.js';
+import { SHEET, CAMERA_FOV, DESK } from './config.js';
 import { PaperGeometry } from './PaperGeometry.js';
-import { createPaperMaterial } from './paperMaterial.js';
+import { createPaperMaterial, createPaperUniforms, neutralLightMap } from './paperMaterial.js';
 import { computeLayout } from './layout.js';
 import { buildCameraTracks, sampleTimeline } from './timeline.js';
-import { createContactTexture, createProps, createWoodTexture } from './table.js';
+import {
+  createContactTexture,
+  createDeskUniforms,
+  createLightMap,
+  createPhotoDesk,
+  createProceduralDesk,
+  createWindowGobo,
+} from './table.js';
 
 /**
- * The opening scene: a folded newspaper on a table. Renders on demand only —
- * call render(progress) whenever scroll progress changes.
+ * The opening scene: a folded newspaper on a desk in morning light. Renders on
+ * demand only — call render(progress) whenever scroll progress changes.
+ *
+ * desk: { photo } for a photographed desk, or { wood, detail } for the
+ * procedural walnut stand-in (all HTMLImageElements).
  */
 export class NewspaperScene {
-  constructor(canvas, { quality, outsideCanvas, paperColor }) {
+  constructor(canvas, { quality, outsideCanvas, fillerCanvas, paperColor, desk, camera = {} }) {
     this.quality = quality;
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, quality.maxPixelRatio));
@@ -25,70 +35,122 @@ export class NewspaperScene {
     this.maxTextureSize = Math.min(4096, renderer.capabilities.maxTextureSize);
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#2a1d14');
+    scene.background = new THREE.Color('#1a110b');
     this.scene = scene;
     this.camera = new THREE.PerspectiveCamera(CAMERA_FOV, 1, 0.05, 60);
 
-    // Light: one warm window light, a soft fill. Restrained on purpose.
-    scene.add(new THREE.HemisphereLight('#fff6ea', '#4a3829', 1.15));
-    const key = new THREE.DirectionalLight('#fff3e3', 2.25);
-    key.position.set(-2.6, 6.4, 2.4);
-    key.target.position.set(0.2, 0, 0);
-    key.castShadow = true;
-    key.shadow.mapSize.set(quality.shadowMap, quality.shadowMap);
-    Object.assign(key.shadow.camera, { left: -3.4, right: 3.4, top: 3.4, bottom: -3.4, near: 1, far: 16 });
-    key.shadow.bias = -0.0004;
-    key.shadow.normalBias = 0.012;
-    key.shadow.radius = 3.5;
-    key.shadow.intensity = 0.78;
-    scene.add(key, key.target);
+    this.paperUniforms = createPaperUniforms();
+    this.paperUniforms.uPaper.value.set(paperColor);
+    this.deskUniforms = createDeskUniforms();
+    this.photoMode = !!desk.photo;
+    this.cameraOptions = this.photoMode ? { startElevation: DESK.photo.elevation, straight: true, holdWide: true, ...camera } : camera;
 
-    // Table.
-    const wood = createWoodTexture(quality.shadowMap >= 2048 ? 2048 : 1024, this.maxAnisotropy);
-    const table = new THREE.Mesh(
-      new THREE.PlaneGeometry(9, 9),
-      new THREE.MeshStandardMaterial({ map: wood, roughness: 0.6, metalness: 0 })
-    );
-    table.rotation.x = -Math.PI / 2;
-    table.position.set(0.4, 0, 0.2);
-    table.receiveShadow = true;
-    scene.add(table);
-    scene.add(createProps());
+    if (this.photoMode) this.#buildPhotoDesk(desk.photo);
+    else this.#buildProceduralDesk(desk);
 
-    // The sheet. Ground group shares the paper's yaw so the contact shadow follows it.
+    // Ambient contact darkening that follows the paper's footprint and height.
     this.ground = new THREE.Group();
     this.contact = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1),
-      new THREE.MeshBasicMaterial({ map: createContactTexture(), color: '#000', transparent: true, opacity: 0.4, depthWrite: false })
+      new THREE.MeshBasicMaterial({ map: createContactTexture(), color: '#000', transparent: true, opacity: 0.5, depthWrite: false })
     );
     this.contact.rotation.x = -Math.PI / 2;
     this.contact.position.y = 0.0008;
     this.ground.add(this.contact);
     scene.add(this.ground);
 
-    this.paper = new PaperGeometry(quality.segments);
-    this.uniforms = { uUnlit: { value: 0 }, uCreases: { value: 1 } };
-    this.outsideTexture = this.#canvasTexture(outsideCanvas);
-    this.insideTexture = this.#canvasTexture(solidCanvas(paperColor));
-    const inside = new THREE.Mesh(
-      this.paper.geometry,
-      createPaperMaterial({ map: this.insideTexture, side: THREE.FrontSide, uniforms: this.uniforms })
-    );
-    inside.material.shadowSide = THREE.DoubleSide;
-    inside.castShadow = true;
-    inside.receiveShadow = true;
-    const outside = new THREE.Mesh(
-      this.paper.geometry,
-      createPaperMaterial({ map: this.outsideTexture, side: THREE.BackSide, uniforms: this.uniforms })
-    );
-    outside.receiveShadow = true;
-    inside.frustumCulled = outside.frustumCulled = false;
-    this.meshes = { inside, outside };
-    this.sheet = new THREE.Group();
-    this.sheet.add(inside, outside);
-    scene.add(this.sheet);
-
+    this.#buildPaper(outsideCanvas, fillerCanvas, paperColor);
     this._target = new THREE.Vector3();
+    this.projector = new THREE.PerspectiveCamera(CAMERA_FOV, 16 / 9, 0.05, 60);
+  }
+
+  #buildProceduralDesk(desk) {
+    const { scene, quality } = this;
+    // Morning daylight from the upper left, through a window (gobo), plus a
+    // low warm fill so shadows stay soft rather than black.
+    scene.add(new THREE.HemisphereLight('#f3eee6', '#3a2617', 0.82));
+    const fill = new THREE.DirectionalLight('#fff0dc', 0.3);
+    fill.position.set(3, 2.5, 4);
+    scene.add(fill);
+
+    const sun = new THREE.SpotLight('#ffecd4', 2.9, 0, 0.56, 0.55, 0);
+    sun.position.set(-4.8, 5.4, -3.9);
+    sun.target.position.set(0.45, 0, 0.25);
+    sun.map = createWindowGobo();
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(quality.shadowMap, quality.shadowMap);
+    sun.shadow.camera.near = 3;
+    sun.shadow.camera.far = 16;
+    sun.shadow.bias = -0.0003;
+    sun.shadow.normalBias = 0.01;
+    sun.shadow.radius = 4;
+    sun.shadow.intensity = 0.82;
+    scene.add(sun, sun.target);
+    this.sun = sun;
+    this.paperUniforms.uSunDir.value.copy(sun.position).sub(sun.target.position).normalize();
+    this.paperUniforms.uLightMap.value = neutralLightMap();
+
+    const { group } = createProceduralDesk(desk, this.deskUniforms, this.maxAnisotropy);
+    scene.add(group);
+  }
+
+  #buildPhotoDesk(photo) {
+    const { scene, quality } = this;
+    const dir = new THREE.Vector3(...DESK.photo.sun).normalize();
+    // Same light balance as the procedural desk; the photograph's own light
+    // pattern reaches the paper through the light map.
+    scene.add(new THREE.HemisphereLight('#f3eee6', '#3a2617', 0.82));
+    const fill = new THREE.DirectionalLight('#fff0dc', 0.3);
+    fill.position.set(3, 2.5, 4);
+    scene.add(fill);
+    const sun = new THREE.DirectionalLight('#ffecd4', 2.7);
+    sun.position.copy(dir).multiplyScalar(8);
+    sun.target.position.set(0, 0, 0);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(quality.shadowMap, quality.shadowMap);
+    Object.assign(sun.shadow.camera, { left: -3.6, right: 3.6, top: 3.6, bottom: -3.6, near: 1, far: 18 });
+    sun.shadow.bias = -0.0003;
+    sun.shadow.normalBias = 0.01;
+    sun.shadow.radius = 4;
+    sun.shadow.intensity = 0.85;
+    scene.add(sun, sun.target);
+    this.sun = sun;
+    this.paperUniforms.uSunDir.value.copy(dir);
+    this.paperUniforms.uLightMap.value = createLightMap(photo);
+    this.paperUniforms.uLightAmount.value = 0.7;
+
+    const desk = createPhotoDesk(photo, this.deskUniforms, this.maxAnisotropy);
+    this.photoDesk = desk;
+    scene.add(desk.group);
+  }
+
+  #buildPaper(outsideCanvas, fillerCanvas, paperColor) {
+    this.paper = new PaperGeometry(this.quality.segments);
+    this.outsideTexture = this.#canvasTexture(outsideCanvas);
+    this.fillerTexture = this.#canvasTexture(fillerCanvas);
+    this.insideTexture = this.#canvasTexture(solidCanvas(paperColor));
+    const u = this.paperUniforms;
+    const mat = {
+      spread: createPaperMaterial({ map: this.insideTexture, side: THREE.FrontSide, uniforms: u }),
+      cover: createPaperMaterial({ map: this.outsideTexture, side: THREE.BackSide, uniforms: u }),
+      fillerFront: createPaperMaterial({ map: this.fillerTexture, side: THREE.FrontSide, uniforms: u }),
+      fillerBack: createPaperMaterial({ map: this.fillerTexture, side: THREE.BackSide, uniforms: u }),
+    };
+    this.materials = mat;
+    this.sheet = new THREE.Group();
+    const last = this.paper.layers.length - 1;
+    this.paper.layers.forEach((layer, k) => {
+      // Outermost sheet carries the cover; innermost carries the printed spread.
+      const inside = new THREE.Mesh(layer.geometry, k === last ? mat.spread : mat.fillerFront);
+      const outside = new THREE.Mesh(layer.geometry, k === 0 ? mat.cover : mat.fillerBack);
+      inside.receiveShadow = outside.receiveShadow = true;
+      inside.frustumCulled = outside.frustumCulled = false;
+      if (k === 0) inside.castShadow = true; // one caster stands in for the whole stack
+      this.sheet.add(inside, outside);
+    });
+    mat.fillerFront.shadowSide = THREE.DoubleSide;
+    mat.spread.shadowSide = THREE.DoubleSide;
+    this.scene.add(this.sheet);
   }
 
   #canvasTexture(canvas) {
@@ -106,8 +168,46 @@ export class NewspaperScene {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.layout = computeLayout(width, height, CAMERA_FOV);
-    this.tracks = buildCameraTracks(this.layout);
+    this.tracks = buildCameraTracks(this.layout, this.cameraOptions);
+    this.#updateProjector();
     return this.layout;
+  }
+
+  /**
+   * Photo mode: the photograph is projected from the opening camera pose,
+   * cover-fitted to this viewport, so the first frame shows it undistorted.
+   */
+  #updateProjector() {
+    const p = this.projector;
+    this.#poseCamera(p, sampleTimeline(0, this.tracks));
+    const viewAspect = this.layout.aspect;
+    const photoAspect = this.photoDesk ? this.photoDesk.aspect : 16 / 9;
+    const half = (CAMERA_FOV * Math.PI) / 360;
+    const cover = photoAspect >= viewAspect ? Math.tan(half) : (Math.tan(half) * viewAspect) / photoAspect;
+    p.fov = (360 / Math.PI) * Math.atan(cover * (this.photoMode ? DESK.photo.overscan : 1));
+    p.aspect = photoAspect;
+    p.updateProjectionMatrix();
+    p.updateMatrixWorld(true);
+    const m = new THREE.Matrix4().multiplyMatrices(p.projectionMatrix, p.matrixWorldInverse);
+    this.paperUniforms.uProjector.value.copy(m);
+    if (this.photoDesk) this.photoDesk.projectorUniform.value.copy(m);
+  }
+
+  /** Places the sheet for state `s` and orbits `cam` around its target. */
+  #poseCamera(cam, s) {
+    this.sheet.position.y = s.lift;
+    this.sheet.rotation.set(s.tilt, s.yaw, 0, 'YXZ');
+    this.sheet.updateMatrixWorld(true);
+    const c = s.camera;
+    const target = this._target.set(c.x, SHEET.restHeight + this.paper.topHeight, c.z);
+    this.sheet.localToWorld(target);
+    const ce = Math.cos(c.elevation);
+    const se = Math.sin(c.elevation);
+    const sa = Math.sin(c.azimuth);
+    const ca = Math.cos(c.azimuth);
+    cam.position.set(target.x + c.dist * ce * sa, target.y + c.dist * se, target.z + c.dist * ce * ca);
+    cam.up.set(-se * sa, ce, -se * ca);
+    cam.lookAt(target);
   }
 
   /** Texels per CSS pixel to print the inside spread at (≈ device pixels, capped by GPU limits). */
@@ -119,8 +219,8 @@ export class NewspaperScene {
   setInsideCanvas(canvas) {
     const old = this.insideTexture;
     this.insideTexture = this.#canvasTexture(canvas);
-    this.meshes.inside.material.map = this.insideTexture;
-    this.meshes.inside.material.needsUpdate = true;
+    this.materials.spread.map = this.insideTexture;
+    this.materials.spread.needsUpdate = true;
     old.dispose();
   }
 
@@ -129,33 +229,22 @@ export class NewspaperScene {
     const s = sampleTimeline(progress, this.tracks);
     const bounds = this.paper.update(s);
 
-    this.sheet.position.y = s.lift;
-    this.sheet.rotation.set(s.tilt, s.yaw, 0, 'YXZ');
     this.ground.rotation.y = s.yaw;
-    this.uniforms.uUnlit.value = s.unlit;
-    this.uniforms.uCreases.value = s.creases;
+    this.paperUniforms.uUnlit.value = s.unlit;
+    this.paperUniforms.uAge.value = s.creases;
+    this.deskUniforms.uFade.value = s.deskFade;
+    this.deskUniforms.uBlur.value = s.deskFade * 2.4;
 
-    // Contact darkening: tight and dark on the table, broad and faint when lifted.
+    // Contact darkening: tight and dark on the desk, broad and faint when lifted.
     const h = s.lift + Math.max(0, bounds.minY);
-    const grow = 1.18 + h * 2.4;
+    const grow = 1.12 + h * 2.6;
     this.contact.position.x = (bounds.minX + bounds.maxX) / 2;
     this.contact.position.z = (bounds.minZ + bounds.maxZ) / 2;
-    this.contact.scale.set((bounds.maxX - bounds.minX) * grow / 0.6, (bounds.maxZ - bounds.minZ) * grow / 0.6, 1);
-    this.contact.material.opacity = 0.42 * Math.max(0.25, 1 - h * 3.2) * (1 - s.unlit);
+    this.contact.scale.set(((bounds.maxX - bounds.minX) * grow) / 0.62, ((bounds.maxZ - bounds.minZ) * grow) / 0.62, 1);
+    this.contact.material.opacity = 0.55 * Math.max(0.22, 1 - h * 3.4) * (1 - s.unlit);
 
     // Camera: orbit the (moving) target, ending perpendicular to the page.
-    const cam = s.camera;
-    this.sheet.updateMatrixWorld(true);
-    const target = this._target.set(cam.x, SHEET.restHeight, cam.z);
-    this.sheet.localToWorld(target);
-    const ce = Math.cos(cam.elevation);
-    const se = Math.sin(cam.elevation);
-    const sa = Math.sin(cam.azimuth);
-    const ca = Math.cos(cam.azimuth);
-    this.camera.position.set(target.x + cam.dist * ce * sa, target.y + cam.dist * se, target.z + cam.dist * ce * ca);
-    this.camera.up.set(-se * sa, ce, -se * ca);
-    this.camera.lookAt(target);
-
+    this.#poseCamera(this.camera, s);
     this.renderer.render(this.scene, this.camera);
     return s;
   }

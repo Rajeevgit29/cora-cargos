@@ -36,6 +36,7 @@ export const TIMELINE = {
     unlit: [0.85, 0.95], // blend lighting out so the paper matches the HTML colour exactly
     creases: [0.83, 0.95], // crease shading fades as the page "becomes" the website
     vignette: [0.7, 0.92],
+    desk: [0.72, 0.93], // the desk darkens and softens as the page fills the frame
     controls: [0.8, 0.9],
     fade: [0.955, 0.99], // canvas dissolves into the live HTML
     nav: 0.97,
@@ -50,13 +51,25 @@ function fitDistance(w, h, margin, aspect, elevation) {
   return Math.max((projectedH * margin) / t, (w * margin) / (t * aspect));
 }
 
-/** Builds the camera tracks for a given handoff layout (they depend on viewport shape). */
-export function buildCameraTracks(layout) {
+/**
+ * Builds the camera tracks for a given handoff layout (they depend on viewport
+ * shape). `startElevation` (degrees) overrides the opening angle, so the first
+ * frame can match the perspective of a desk photograph.
+ */
+export function buildCameraTracks(layout, { startElevation, straight = false, holdWide = false } = {}) {
   const { width: W, height: H } = SHEET;
-  const { keys, elevation, azimuth } = TIMELINE.camera;
+  const { keys } = TIMELINE.camera;
+  // A photographed desk is shot straight on, so the camera does not orbit.
+  const azimuth = straight ? TIMELINE.camera.azimuth.map(() => 0) : TIMELINE.camera.azimuth;
+  const elevation = [...TIMELINE.camera.elevation];
+  if (startElevation) {
+    elevation[0] = startElevation;
+    elevation[1] = Math.max(elevation[1], startElevation + 4);
+    elevation[2] = Math.max(elevation[2], (elevation[1] + 90) / 2);
+  }
   const a = layout.aspect;
   const portrait = layout.mode === 'page';
-  const m0 = lerp(1.25, 2.25, clamp((a - 0.5) / 1.1));
+  const m0 = lerp(1.3, 2.45, clamp((a - 0.5) / 1.1));
   const m1 = lerp(1.1, 1.5, clamp((a - 0.5) / 1.1));
   const e = elevation.map((d) => d * DEG);
 
@@ -68,6 +81,15 @@ export function buildCameraTracks(layout) {
       : { x: 0, z: 0, dist: fitDistance(W, H, 1.3, a, e[2]) },
     { x: layout.cx, z: layout.cz, dist: layout.distance },
   ];
+
+  // With a photographed desk, the opening shot must already be the widest
+  // view, so every later frame stays inside the photograph.
+  // It is centred between the folded paper and the open spread, so the
+  // unfolding footprint sits in the middle of the photograph.
+  if (holdWide) {
+    poses[0] = { x: W / 10, z: H / 14, dist: Math.max(poses[0].dist, poses[1].dist, poses[2].dist) * 1.04 };
+    poses[1] = { ...poses[1], x: poses[0].x, z: poses[0].z }; // no sideways drift past the photo's edge
+  }
 
   const track = (vals) => monotone(keys.map((k, i) => [k, vals[i]]));
   return {
@@ -101,6 +123,7 @@ export function sampleTimeline(p, cameraTracks) {
     unlit: span(p, handoff.unlit, ease.inOutSine),
     creases: 1 - span(p, handoff.creases, ease.inOutSine),
     vignette: 1 - span(p, handoff.vignette, ease.inOutSine),
+    deskFade: span(p, handoff.desk, ease.inOutSine),
     controls: 1 - span(p, handoff.controls),
     fade: 1 - span(p, handoff.fade, ease.inOutSine),
     camera: {
