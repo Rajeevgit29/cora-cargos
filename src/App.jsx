@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import { projects, site } from './content.js';
+import { allStories, site } from './content.js';
 import { introAllowed, parseRoute, prefersReducedMotion } from './lib/env.js';
 import { initReveals } from './lib/reveal.js';
 
@@ -11,6 +11,8 @@ import NavBar from './components/NavBar.jsx';
 import FrontPage from './components/FrontPage.jsx';
 import SelectedWork from './components/SelectedWork.jsx';
 import Websites from './components/Websites.jsx';
+import PrintRoom from './components/PrintRoom.jsx';
+import { LightboxProvider } from './components/Lightbox.jsx';
 import Studio from './components/Studio.jsx';
 import Services from './components/Services.jsx';
 import Contact from './components/Contact.jsx';
@@ -21,7 +23,7 @@ import PrintPlates from './intro/PrintPlates.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SECTIONS = ['websites', 'work', 'studio', 'services', 'contact'];
+const SECTIONS = ['websites', 'print', 'work', 'studio', 'services', 'contact'];
 const NAV_OFFSET = 56;
 
 export default function App() {
@@ -132,7 +134,7 @@ export default function App() {
   // Document title + focus for the current route.
   useEffect(() => {
     if (route.name === 'case') {
-      const p = projects.find((x) => x.slug === route.slug);
+      const p = allStories.find((x) => x.slug === route.slug);
       document.title = p ? `${p.headline} — ${site.name}` : `Story not found — ${site.name}`;
       document.getElementById('case-title')?.focus({ preventScroll: true });
     } else {
@@ -183,7 +185,7 @@ export default function App() {
   const navVisible = isCase || !intro || introDone;
 
   return (
-    <>
+    <LightboxProvider>
       <a className="skip-link" href="#front" onClick={(e) => (e.preventDefault(), intro ? skipIntro() : goToSection('front'))}>
         Skip to the front page
       </a>
@@ -214,6 +216,7 @@ export default function App() {
           </div>
 
           <Websites ref={workRef} />
+          <PrintRoom onOpen={openProject} />
           <SelectedWork vtSlug={vtSlug} onOpen={openProject} />
           <Studio />
           <Services onEnquire={enquireAbout} />
@@ -223,6 +226,6 @@ export default function App() {
       </div>
 
       {intro && <PrintPlates ref={platesRef} />}
-    </>
+    </LightboxProvider>
   );
 }

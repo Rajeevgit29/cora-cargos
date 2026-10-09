@@ -1,7 +1,7 @@
 import { site } from '../content.js';
 
 const LINKS = [
-  { id: 'websites', label: 'Work', also: ['work'] }, // web work first, then the case studies
+  { id: 'websites', label: 'Work', also: ['print', 'work'] }, // web work first, then the case studies
   { id: 'studio', label: 'Studio' },
   { id: 'services', label: 'Services' },
   { id: 'contact', label: 'Contact' },

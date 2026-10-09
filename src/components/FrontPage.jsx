@@ -5,6 +5,7 @@ import { keepHyphenated, ProjectImage, ReadLink, SampleTag } from './Editorial.j
 
 const INDEX = [
   { id: 'websites', label: 'Websites', page: 'p. 2' },
+  { id: 'print', label: 'Print Room', page: 'p. 3' },
   { id: 'work', label: 'Selected Work', page: 'p. 4' },
   { id: 'studio', label: 'The Studio', page: 'p. 6' },
   { id: 'services', label: 'Services', page: 'p. 8' },

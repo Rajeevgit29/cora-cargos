@@ -42,6 +42,11 @@ export default function Footer({ onNavigate, onReplay }) {
                 </a>
               </li>
               <li>
+                <a className="text-link" href="#print" onClick={go('print')}>
+                  The Print Room
+                </a>
+              </li>
+              <li>
                 <a className="text-link" href="#work" onClick={go('work')}>
                   Selected Work
                 </a>

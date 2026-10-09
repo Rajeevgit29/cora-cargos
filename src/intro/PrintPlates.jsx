@@ -96,10 +96,11 @@ const PrintPlates = forwardRef(function PrintPlates(_, ref) {
           {[
             ['01', 'Front Page', frontPage.headline, '1'],
             ['02', 'Websites', `${websites.items.length} sites, designed and live`, '2'],
-            ['03', 'Selected Work', `${projects.length} stories from the studio`, '4'],
-            ['04', 'The Studio', 'Who we are and how we work', '6'],
-            ['05', 'Services', `A directory of ${services.items.length} disciplines`, '8'],
-            ['06', 'Classifieds', 'Your next big story starts here', '10'],
+            ['03', 'The Print Room', 'Identity, decks, posters & merch', '3'],
+            ['04', 'Selected Work', `${projects.length} stories from the studio`, '4'],
+            ['05', 'The Studio', 'Who we are and how we work', '6'],
+            ['06', 'Services', `A directory of ${services.items.length} disciplines`, '8'],
+            ['07', 'Classifieds', 'Your next big story starts here', '10'],
           ].map(([n, title, dek, page]) => (
             <div className="pl-index__row" key={n}>
               <span className="pl-index__n">{n}</span>

@@ -37,7 +37,7 @@ const SelectedWork = forwardRef(function SelectedWork({ vtSlug, onOpen }, ref) {
   return (
     <section ref={ref} id="work" className="section work" aria-labelledby="work-title">
       <div className="section__inner">
-        <SectionHead label="Section B — Selected Work" meta={`${stories.length + 1} stories in this edition`} page="p. 4" />
+        <SectionHead label="Section C — Selected Work" meta={`${stories.length + 1} sample stories`} page="p. 4" />
         <div className="section-intro">
           <h2 id="work-title" className="section-title" tabIndex={-1} data-section-heading>
             The work, <em>as reported.</em>

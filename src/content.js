@@ -154,6 +154,157 @@ export const websites = {
 };
 
 /*
+ * REAL CASE STUDIES — studio work with its own story page (#/work/<slug>).
+ * Same shape as `projects` below. Copy describes the work as delivered;
+ * add outcomes only if they are verified.
+ */
+export const stories = [
+  {
+    slug: 'ascent-identity',
+    client: 'Scaler School of Technology',
+    discipline: 'Brand identity — Ascent Techfest ’26',
+    headline: 'Ascent: a techfest identity built to escape the ordinary',
+    summary:
+      'A complete identity for Ascent, the techfest of Scaler School of Technology — a heavy, angular wordmark on midnight indigo, carried across merchandise, badges, apparel, social, the website and the venue.',
+    image: '/work/print/ascent/identity-01.webp',
+    imageAlt: 'The Ascent wordmark with “Escape the Ordinary” and “Techfest 26” on a midnight-indigo background.',
+    treatment: 'color',
+    caseStudy: {
+      deck: 'One system for a two-day techfest, from the wordmark to the lanyard, the tote bag, the feed and the front door.',
+      briefTitle: 'The project',
+      brief:
+        'Ascent is the techfest of Scaler School of Technology, themed “Escape the Ordinary”. Its identity had to work everywhere the festival appears: on screens and social feeds, on campus and at the venue, and on everything attendees take home.',
+      approachTitle: 'The identity',
+      approach: [
+        'The wordmark is drawn from heavy, angular letterforms with a cut through the A, so it reads as momentum and holds up at the size of a badge as well as a banner. It sits on a midnight-indigo ground with warm, sand-coloured type.',
+        'Typography pairs Tan Pearl, a display serif for titles and captions, with Montserrat for body text, so the system can move between ceremony and information.',
+        'Illustration carries the theme — winding roads, open doorways and a rocket leaving the ground — across the notebook, tote, mugs, jacket and poster.',
+        'The same system extends to sticker sheets, ID badges, social posts, sponsor announcements, the event website and branding at the venue entrance.',
+      ],
+      deliverables: ['Wordmark & logo', 'Typography system', 'Illustration', 'Event merchandise', 'Apparel', 'ID badges & lanyards', 'Sticker sheets', 'Posters & social media', 'Event website', 'On-ground branding'],
+      links: [{ label: 'Visit the Ascent website', url: 'https://darshannahata5555-cpu.github.io/ascent-website/' }],
+      gallery: [
+        { src: '/work/print/ascent/identity-03.webp', alt: 'Ascent typography: Tan Pearl for titles and Montserrat for body text.', caption: 'Typography: Tan Pearl for titles, Montserrat for text.' },
+        { src: '/work/print/ascent/identity-05.webp', alt: 'Ascent notebook, mugs and tote bag on dark stone.', caption: 'Notebook, mugs and tote.' },
+        { src: '/work/print/ascent/identity-07.webp', alt: 'Ascent ID badges on lanyards, front and back.', caption: 'ID badges and lanyards.' },
+        { src: '/work/print/ascent/identity-08.webp', alt: 'Black Ascent bomber jacket, front and back.', caption: 'The crew jacket.' },
+        { src: '/work/print/ascent/identity-06.webp', alt: 'Two Ascent sticker sheets with code-themed stickers.', caption: 'Sticker sheets.' },
+        { src: '/work/print/ascent/identity-04.webp', alt: 'The Ascent website on a laptop, with a live countdown.', caption: 'The event website.' },
+        { src: '/work/print/ascent/identity-09.webp', alt: 'A collage of Ascent social posts and sponsorship slides.', caption: 'Social posts and sponsorship material.' },
+        { src: '/work/print/ascent/identity-10.webp', alt: 'Ascent platform screens on a laptop and tablet.', caption: 'Platform screens.' },
+        { src: '/work/print/ascent/onground.webp', alt: 'The Ascent venue entrance with branded arch and standees.', caption: 'On the ground: the venue entrance.' },
+        { src: '/work/print/social/ascent-poster.webp', alt: 'Ascent event poster with a rocket lifting off.', caption: 'Event poster.' },
+        { src: '/work/print/social/ascent-omium.webp', alt: 'Ascent social post announcing Omium as an event sponsor.', caption: 'Sponsor announcement.' },
+        { src: '/work/print/merch/ascent-tees.webp', alt: 'Two black Ascent T-shirts, front and back.', caption: 'Festival T-shirts.' },
+        { src: '/work/print/merch/ascent-badge.webp', alt: 'Round Ascent pin badge with a rocket illustration.', caption: 'Pin badge.' },
+        { src: '/work/print/merch/ascent-notebook.webp', alt: 'Ascent spiral notebook with a winding-road illustration.', caption: 'Notebook.' },
+        { src: '/work/print/merch/ascent-tote.webp', alt: 'Black Ascent tote bag with a doorway illustration.', caption: 'Tote bag.' },
+        { src: '/work/print/merch/ascent-mugs.webp', alt: 'Two black Ascent mugs.', caption: 'Mugs.' },
+        { src: '/work/print/ascent/identity-02.webp', alt: 'The Ascent team photographed together in festival T-shirts.', caption: 'The team, in the festival colours.' },
+      ],
+      outcomes: [],
+    },
+  },
+];
+
+const PRINT = '/work/print';
+const pages = (dir, n, { skip = [], prefix = 'page' } = {}) =>
+  Array.from({ length: n }, (_, i) => i + 1)
+    .filter((i) => !skip.includes(i))
+    .map((i) => {
+      const k = String(i).padStart(2, '0');
+      return { src: `${PRINT}/${dir}/${prefix}-${k}.webp`, thumb: `${PRINT}/${dir}/thumb-${k}.webp` };
+    });
+
+/*
+ * THE PRINT ROOM — identity, decks, brochures, posters and merchandise.
+ * Images live in /public/work/print. Publications open in a page-through
+ * reader; everything else opens full size.
+ */
+export const printRoom = {
+  section: 'Section B — The Print Room',
+  headline: 'Identity, print and',
+  headlineEm: 'things you can hold.',
+  lede: 'Brand systems, sponsorship decks, brochures, posters and merchandise designed by the studio. Select any piece to look closer.',
+  feature: 'ascent-identity',
+  featureThumbs: [
+    { src: `${PRINT}/ascent/identity-05.webp`, alt: 'Ascent notebook, mugs and tote bag.' },
+    { src: `${PRINT}/ascent/identity-07.webp`, alt: 'Ascent ID badges on lanyards.' },
+    { src: `${PRINT}/ascent/identity-08.webp`, alt: 'Ascent bomber jacket.' },
+    { src: `${PRINT}/ascent/onground.webp`, alt: 'The Ascent venue entrance.' },
+  ],
+  publications: [
+    {
+      slug: 'yugaantar-deck',
+      client: 'Scaler School of Technology',
+      title: 'Yugaantar 2026 sponsorship deck',
+      kind: 'Sponsorship deck',
+      summary:
+        'The sponsorship deck for Yugaantar 2026, the annual cultural-tech fest of Scaler School of Technology: the fest’s story, audience, reach, speakers, past sponsors, events and partnership tiers, in a confident blue-and-white system.',
+      format: 'slides',
+      unit: 'slides',
+      pages: pages('yugaantar', 16, { skip: [16], prefix: 'slide' }), // contact slide (personal phone numbers) left out
+    },
+    {
+      slug: 'nodezero-brochure',
+      client: 'Node Zero Labs',
+      title: 'Node Zero Labs brochure',
+      kind: 'Company brochure',
+      summary:
+        'A ten-page brochure for Node Zero Labs, an AI infrastructure studio building training data, RL environments and evaluations for AI labs — a quiet, technical layout in ink green and warm paper.',
+      format: 'a4',
+      unit: 'pages',
+      pages: pages('nodezero', 10),
+    },
+    {
+      slug: 'lumora-brochure',
+      client: 'Lumora Solar',
+      title: 'Lumora Solar brochure',
+      kind: 'Company brochure',
+      summary:
+        'A sixteen-page brochure for Lumora Solar, a rooftop solar company: its founders, services, process, system types, government subsidies, questions and past projects, organised for homeowners and businesses.',
+      format: 'a4',
+      unit: 'pages',
+      pages: pages('lumora', 16),
+    },
+  ],
+  social: {
+    title: 'Social posts & posters',
+    items: [
+      { src: `${PRINT}/social/ascent-poster.webp`, title: 'Ascent — event poster', alt: 'Ascent event poster with a rocket lifting off and the prize pool and flagship events listed.' },
+      { src: `${PRINT}/social/scaler-skip-entrance.webp`, title: 'Scaler School of Technology — admissions post', alt: 'Scaler admissions post: skip the entrance exam and give interviews directly with qualifying JEE percentiles.' },
+      { src: `${PRINT}/social/yugantar-nikhita.webp`, title: 'Yugaantar — artist poster', alt: 'Yugaantar poster announcing Nikhita Gandhi at Scaler School of Technology.' },
+      { src: `${PRINT}/social/promptwars.webp`, title: 'Scaler × Google — PromptWars', alt: 'PromptWars by Scaler and Google social post with a person coding at night.' },
+      { src: `${PRINT}/social/ascent-omium.webp`, title: 'Ascent × Omium — sponsor announcement', alt: 'Ascent post announcing Omium as sponsor of The Anvil event.' },
+      { src: `${PRINT}/social/scaler-admissions.webp`, title: 'Scaler School of Technology — admissions closing', alt: 'Scaler post: admissions closing for the April 2026 intake.' },
+      { src: `${PRINT}/social/yugantar-vivek.webp`, title: 'Yugaantar — artist poster', alt: 'Yugaantar poster announcing Vivek Samtani at Scaler School of Technology.' },
+    ],
+  },
+  merch: {
+    title: 'Campus & club merchandise',
+    initial: 9,
+    items: [
+      { src: `${PRINT}/merch/cultural-club-varsity.webp`, title: 'Cultural Club — varsity jacket', alt: 'Black and cream Cultural Club varsity jacket, back and front.' },
+      { src: `${PRINT}/merch/orators-society-varsity.webp`, title: 'The Orators’ Society — varsity jacket', alt: 'Navy and cream Orators’ Society varsity jacket, back and front.' },
+      { src: `${PRINT}/merch/scaler-diary-71.webp`, title: 'Scaler School of Technology — diary', alt: 'Blue Scaler diary with “Excel. Exceed. Lead.” and a large 71.' },
+      { src: `${PRINT}/merch/reinforce-tee.webp`, title: 'Reinforce, AI/ML club — T-shirt', alt: 'Black Reinforce AI/ML club T-shirt with an illustrated character.' },
+      { src: `${PRINT}/merch/built-different-hoodie.webp`, title: 'built:different — hoodie', alt: 'Black hoodie reading built:different.' },
+      { src: `${PRINT}/merch/academic-clubs-logo.webp`, title: 'Academic Clubs — logo', alt: 'Academic Clubs logo in white on black.' },
+      { src: `${PRINT}/merch/lab0-tee.webp`, title: 'lab0.ai — T-shirt', alt: 'Black lab0.ai T-shirt, front and back, reading “Built to implement.”' },
+      { src: `${PRINT}/merch/kong-jersey.webp`, title: 'KONG — sports jersey', alt: 'Navy KONG sports jersey, front and back, number 09.' },
+      { src: `${PRINT}/merch/cultural-club-tee.webp`, title: 'Cultural Club — T-shirt', alt: 'White Cultural Club T-shirt, front and back.' },
+      { src: `${PRINT}/merch/metacognition-tee.webp`, title: 'MetaCognition — T-shirt', alt: 'Black MetaCognition T-shirt reading “Evolution of memory begins here.”' },
+      { src: `${PRINT}/merch/scaler-tote.webp`, title: 'Scaler — “Build with AI” tote', alt: 'White Scaler tote bag reading “Powered by curiosity, build with AI”.' },
+      { src: `${PRINT}/merch/sports-club-tee.webp`, title: 'Sports Club — T-shirt', alt: 'Black Sports Club T-shirt, front and back.' },
+      { src: `${PRINT}/merch/scaler-diary-2026.webp`, title: 'Scaler School of Technology — 2026 diary', alt: 'Blue Scaler 2026 diary reading “Excel. Exceed. Lead.”' },
+      { src: `${PRINT}/merch/reinforce-hoodie.webp`, title: 'Reinforce — hoodie', alt: 'Black Reinforce hoodie, back and front.' },
+      { src: `${PRINT}/merch/scaler-keychain.webp`, title: 'Scaler × AI — keychain', alt: 'White keychain shaped like a browser window reading “Hello I’m /building”.' },
+      { src: `${PRINT}/merch/academic-clubs-logo-light.webp`, title: 'Academic Clubs — logo, light', alt: 'Academic Clubs logo in blue on white.' },
+    ],
+  },
+};
+
+/*
  * PROJECTS
  * layout: how the project sits in the Selected Work grid
  *   'lead'   – large feature story         'column' – narrow column story
@@ -337,7 +488,7 @@ export const projects = [
 ];
 
 export const studio = {
-  section: 'Section C — The Studio',
+  section: 'Section D — The Studio',
   headline: 'We work like a newsroom: curious, quick on our feet and fussy about the details.',
   image: '/work/studio.svg',
   imageAlt: 'Sample artwork: a top-down studio desk with paper proofs, swatches, a pencil and a coffee cup.',
@@ -366,7 +517,7 @@ export const studio = {
 };
 
 export const services = {
-  section: 'Section D — The Directory',
+  section: 'Section E — The Directory',
   headline: 'Directory of Services',
   intro: 'Commission the studio for a single piece or a complete edition. Every engagement is led by a senior designer from brief to delivery.',
   items: [
@@ -399,7 +550,7 @@ export const services = {
 };
 
 export const contact = {
-  section: 'Section E — Classifieds',
+  section: 'Section F — Classifieds',
   kicker: 'Classified — Notice to all readers',
   headline: 'Your next big story starts here.',
   body: 'Wanted: brands, founders and organisations with an idea worth printing. Send a few lines about what you are making, when you need it and what a good result looks like. We will reply with next steps.',
@@ -410,3 +561,6 @@ export const contact = {
     { title: 'Notice', text: 'This edition contains sample projects and placeholder details. Real stories will be printed here soon.', sampleOnly: true },
   ],
 };
+
+/** Every story with its own page: real case studies first, then the samples. */
+export const allStories = [...stories, ...projects];

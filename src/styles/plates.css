@@ -176,7 +176,7 @@
   display: flex;
   align-items: baseline;
   gap: 18px;
-  padding: 15px 0;
+  padding: 10px 0;
   border-bottom: 1px solid var(--rule-soft);
 }
 .pl-index__n {

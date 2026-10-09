@@ -1,9 +1,11 @@
-import { projects, site } from '../content.js';
+import { allStories as projects, site } from '../content.js';
 import { ProjectImage, ReadLink, SampleTag, storyHref } from './Editorial.jsx';
+import { useLightbox } from './Lightbox.jsx';
 
 export default function CaseStudy({ slug, vtSlug, onOpen, onNavigate }) {
   const index = projects.findIndex((p) => p.slug === slug);
   const project = projects[index];
+  const openViewer = useLightbox();
 
   const back = (
     <a className="back-link" href="#/" onClick={() => onOpen?.(slug)}>
@@ -27,7 +29,22 @@ export default function CaseStudy({ slug, vtSlug, onOpen, onNavigate }) {
 
   const cs = project.caseStudy || {};
   const next = projects[(index + 1) % projects.length];
-  const [heroA, heroB] = cs.gallery || [];
+  const gallery = cs.gallery || [];
+  const [heroA, heroB, ...plates] = gallery;
+  const view = (img) =>
+    openViewer(
+      gallery.map((g) => ({ src: g.src, alt: g.alt, caption: g.caption })),
+      gallery.indexOf(img),
+      { title: `${project.client} — ${project.headline}` }
+    );
+  const Plate = ({ img, className }) => (
+    <figure className={className}>
+      <button type="button" className="case__zoom" onClick={() => view(img)} aria-label={`View larger: ${img.alt}`}>
+        <img src={img.src} alt={img.alt} loading="lazy" decoding="async" />
+      </button>
+      {img.caption && <figcaption className="caption">{img.caption}</figcaption>}
+    </figure>
+  );
 
   return (
     <main id="case" className="case">
@@ -35,7 +52,7 @@ export default function CaseStudy({ slug, vtSlug, onOpen, onNavigate }) {
         <div className="case__topbar">
           {back}
           <span className="case__folio">
-            {site.name} — Selected Work — Story {String(index + 1).padStart(2, '0')} of {String(projects.length).padStart(2, '0')}
+            {site.name} — {project.sample ? 'Selected Work' : 'Case study'} — Story {String(index + 1).padStart(2, '0')} of {String(projects.length).padStart(2, '0')}
           </span>
         </div>
         <div className="rule-double" />
@@ -101,7 +118,7 @@ export default function CaseStudy({ slug, vtSlug, onOpen, onNavigate }) {
           <div className="case__text">
             {cs.brief && (
               <section className="case__section">
-                <h2 className="case__subhead">The brief</h2>
+                <h2 className="case__subhead">{cs.briefTitle || 'The brief'}</h2>
                 <p className="case__first">
                   <span className="dropcap">{cs.brief[0]}</span>
                   {cs.brief.slice(1)}
@@ -111,7 +128,7 @@ export default function CaseStudy({ slug, vtSlug, onOpen, onNavigate }) {
 
             {cs.approach?.length > 0 && (
               <section className="case__section">
-                <h2 className="case__subhead">The approach</h2>
+                <h2 className="case__subhead">{cs.approachTitle || 'The approach'}</h2>
                 {cs.approach.slice(0, 1).map((t) => (
                   <p key={t}>{t}</p>
                 ))}
@@ -121,15 +138,21 @@ export default function CaseStudy({ slug, vtSlug, onOpen, onNavigate }) {
                 ))}
               </section>
             )}
+
+            {cs.links?.length > 0 && (
+              <div className="case__links">
+                {cs.links.map((l) => (
+                  <a key={l.url} className="btn-ink" href={l.url} target="_blank" rel="noopener noreferrer">
+                    {l.label} <span aria-hidden="true">↗</span>
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        {heroA && (
-          <figure className="case__wide">
-            <img src={heroA.src} alt={heroA.alt} loading="lazy" decoding="async" />
-            {heroA.caption && <figcaption className="caption">{heroA.caption}</figcaption>}
-          </figure>
-        )}
+        {heroA && <Plate img={heroA} className="case__wide" />}
 
         <div className="case__closing">
           {cs.deliverables?.length > 0 && (
@@ -145,13 +168,19 @@ export default function CaseStudy({ slug, vtSlug, onOpen, onNavigate }) {
               </ol>
             </section>
           )}
-          {heroB && (
-            <figure className="case__inset">
-              <img src={heroB.src} alt={heroB.alt} loading="lazy" decoding="async" />
-              {heroB.caption && <figcaption className="caption">{heroB.caption}</figcaption>}
-            </figure>
-          )}
+          {heroB && <Plate img={heroB} className="case__inset" />}
         </div>
+
+        {plates.length > 0 && (
+          <section className="case__plates" aria-label="More from the project">
+            <h2 className="case__subhead">More from the project</h2>
+            <div className="plates-grid">
+              {plates.map((img) => (
+                <Plate key={img.src} img={img} className="plate-item" />
+              ))}
+            </div>
+          </section>
+        )}
 
         {cs.outcomes?.length > 0 && (
           <section className="case__section case__outcomes">
