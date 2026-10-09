@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<defs>
+<filter id="grain" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" seed="7"/>
+<feColorMatrix type="saturate" values="0"/>
+<feComponentTransfer><feFuncA type="table" tableValues="0 0.10"/></feComponentTransfer>
+</filter>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="softer" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+<radialGradient id="light" cx="38%" cy="30%" r="85%">
+<stop offset="0" stop-color="#ffe9c4" stop-opacity="0.22"/>
+<stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+</radialGradient>
+</defs>
+<rect width="1600" height="1200" fill="#1E2B45"/>
+<rect y="980" width="1600" height="220" fill="#17223A"/>
+<g transform="translate(26 34)" opacity="0.5" filter="url(#soft)"><circle cx="520" cy="560" r="330" fill="#000"/></g><circle cx="520" cy="560" r="330" fill="#E8A33D"/>
+<g fill="none" stroke="#1E2B45" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+<path d="M 330 690 L 330 450 L 520 610 L 710 450 L 710 690"/>
+</g>
+<path d="M 330 760 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0" fill="none" stroke="#1E2B45" stroke-width="12" stroke-linecap="round"/><path d="M 330 800 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0 q 30 -14 60 0" fill="none" stroke="#1E2B45" stroke-width="12" stroke-linecap="round"/>
+<g transform="translate(20 30)" opacity="0.55" filter="url(#soft)">
+<g transform="translate(860 300) rotate(-6)">
+<rect x="0" y="0" width="560" height="300" rx="10" fill="#000"/>
+<rect x="0" y="0" width="560" height="70" rx="10" fill="#000"/>
+<rect x="0" y="50" width="560" height="20" fill="#000"/>
+<line x1="410" y1="80" x2="410" y2="300" stroke="#1E2B45" stroke-width="3" stroke-dasharray="4 10"/>
+<circle cx="485" cy="190" r="46" fill="#000" stroke="#1E2B45" stroke-width="5"/>
+</g></g>
+<g transform="translate(860 300) rotate(-6)">
+<rect x="0" y="0" width="560" height="300" rx="10" fill="#F1E7D3"/>
+<rect x="0" y="0" width="560" height="70" rx="10" fill="#E8A33D"/>
+<rect x="0" y="50" width="560" height="20" fill="#E8A33D"/>
+<text x="32" y="46" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="26" letter-spacing="5" fill="#1E2B45">MARIGOLD FERRY CO.</text>
+<text x="32" y="122" font-family="'Courier New', Courier, monospace" font-size="20" letter-spacing="3" fill="#1E2B45">HARBOUR → NORTH ISLAND</text>
+<text x="28" y="232" font-family="Georgia, 'Times New Roman', serif" font-size="120" fill="#1E2B45">07:40</text>
+<line x1="410" y1="80" x2="410" y2="300" stroke="#1E2B45" stroke-width="3" stroke-dasharray="4 10"/>
+<circle cx="485" cy="190" r="46" fill="none" stroke="#1E2B45" stroke-width="5"/>
+<text x="485" y="206" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="44" fill="#1E2B45">3</text>
+<text x="32" y="276" font-family="'Courier New', Courier, monospace" font-size="16" letter-spacing="2" fill="#1E2B45" opacity=".7">SINGLE · ADULT · GANGWAY B</text>
+</g>
+<path d="M 80 1060 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0" fill="none" stroke="#6F8FA6" stroke-width="5" stroke-linecap="round"/><path d="M 80 1094 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0" fill="none" stroke="#6F8FA6" stroke-width="5" stroke-linecap="round"/><path d="M 80 1128 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0 q 30 -12 60 0" fill="none" stroke="#6F8FA6" stroke-width="5" stroke-linecap="round"/>
+<rect width="1600" height="1200" fill="url(#light)"/>
+<rect width="1600" height="1200" filter="url(#grain)"/></svg>

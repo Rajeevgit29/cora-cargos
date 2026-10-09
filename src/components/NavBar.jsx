@@ -1,0 +1,39 @@
+import { site } from '../content.js';
+
+const LINKS = [
+  { id: 'work', label: 'Work' },
+  { id: 'studio', label: 'Studio' },
+  { id: 'services', label: 'Services' },
+  { id: 'contact', label: 'Contact' },
+];
+
+export default function NavBar({ visible, active, onNavigate }) {
+  const go = (id) => (e) => {
+    e.preventDefault();
+    onNavigate(id);
+  };
+  return (
+    <header className={`nav${visible ? ' is-visible' : ''}`} inert={!visible ? true : undefined}>
+      <div className="nav__inner">
+        <a className="nav__brand" href="#front" onClick={go('front')} aria-label={`${site.name} — front page`}>
+          <span className="nav__brand-full">{site.name}</span>
+          <span className="nav__brand-short" aria-hidden="true">CC</span>
+        </a>
+        <nav aria-label="Sections">
+          <ul className="nav__links">
+            {LINKS.map((l) => (
+              <li key={l.id}>
+                <a href={`#${l.id}`} onClick={go(l.id)} aria-current={active === l.id ? 'true' : undefined}>
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <a className="nav__cta" href="#contact" onClick={go('contact')}>
+          Enquire <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </header>
+  );
+}

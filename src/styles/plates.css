@@ -1,0 +1,283 @@
+/* ─────────────────────────────────────────────────────────────
+   Print plates — fixed-size offscreen pages printed onto the outside
+   of the 3D sheet. Sizes must match PLATES in intro/newspaper/config.js.
+   Only boxes, borders, text and <img> are printed.
+   ───────────────────────────────────────────────────────────── */
+
+.plates {
+  position: fixed;
+  top: 0;
+  left: -20000px;
+  width: 1200px;
+  pointer-events: none;
+  contain: layout style;
+}
+.plate {
+  position: relative;
+  box-sizing: border-box;
+  width: 1200px;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--f-body);
+  hyphens: manual;
+}
+.plate--quarter {
+  height: 800px;
+  padding: 34px 44px 30px;
+}
+.plate--page {
+  height: 1600px;
+  padding: 50px 64px 48px;
+}
+
+.pl-folio {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 9px;
+  font: 500 13px/1.2 var(--f-mono);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.pl-rule-double {
+  border-top: 4px double var(--ink);
+}
+.pl-rule-thick {
+  height: 8px;
+  border-top: 4px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.pl-rule {
+  border-top: 1px solid var(--ink);
+}
+.pl-mast {
+  padding: 16px 0 4px;
+  font-family: var(--f-mast);
+  font-weight: 800;
+  font-size: 128px;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+}
+.pl-sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 4px 0 14px;
+  font: italic 400 30px/1.1 var(--f-display);
+}
+.pl-line {
+  display: block;
+  width: 150px;
+  border-top: 1px solid var(--ink);
+}
+.pl-kicker {
+  margin: 0 0 10px;
+  font: 500 13px/1.3 var(--f-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+}
+.pl-head {
+  margin: 0 0 14px;
+  font-family: var(--f-display);
+  font-size: 66px;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+.pl-head--small {
+  font-size: 54px;
+  margin-top: 26px;
+}
+.pl-deck {
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.4;
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+/* Cover */
+.pl-cover-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  padding-top: 22px;
+}
+.pl-cover-text {
+  padding-right: 4px;
+}
+.pl-cover-fig {
+  padding-left: 17px;
+  margin-left: -17px;
+  border-left: 1px solid var(--ink);
+}
+.pl-cover-fig img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+.pl-caption {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ink);
+  font: 500 12px/1.2 var(--f-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.pl-unfold {
+  position: absolute;
+  left: 44px;
+  right: 44px;
+  bottom: 26px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.pl-unfold__line {
+  flex: 1;
+  border-top: 1px dashed var(--ink-3);
+}
+.pl-unfold__box {
+  padding: 9px 16px 8px;
+  border: 1px solid var(--ink);
+  font: 500 14px/1 var(--f-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Inside this edition */
+.pl-big {
+  margin: 0;
+  padding: 34px 0 30px;
+  font-family: var(--f-display);
+  font-size: 150px;
+  line-height: 0.86;
+  letter-spacing: -0.015em;
+  text-align: center;
+}
+.pl-big em {
+  color: var(--burgundy);
+}
+.pl-big--left {
+  font-size: 92px;
+  line-height: 0.95;
+  text-align: left;
+}
+.pl-index {
+  padding: 14px 0 26px;
+}
+.pl-index__row {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.pl-index__n {
+  font: 500 14px/1 var(--f-mono);
+  letter-spacing: 0.12em;
+  color: var(--burgundy);
+}
+.pl-index__title {
+  font-family: var(--f-display);
+  font-size: 44px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.pl-index__dek {
+  font-size: 19px;
+  font-style: italic;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.pl-index__dots {
+  flex: 1;
+  min-width: 20px;
+  border-bottom: 2px dotted var(--ink-3);
+}
+.pl-index__page {
+  font: 500 16px/1 var(--f-mono);
+}
+.pl-thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px 26px;
+  padding: 6px 0 28px;
+}
+.pl-thumb img {
+  width: 100%;
+  height: 196px;
+  object-fit: cover;
+  margin-bottom: 9px;
+}
+.pl-mono {
+  filter: grayscale(1) contrast(1.08);
+}
+.pl-thumb__client {
+  display: block;
+  margin-bottom: 4px;
+  font: 500 12px/1.2 var(--f-mono);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+}
+.pl-thumb__head {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 27px;
+  line-height: 1.02;
+}
+.pl-quote {
+  margin: 0;
+  padding: 26px 30px 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 46px;
+  line-height: 1.04;
+  text-align: center;
+}
+.pl-open {
+  position: absolute;
+  right: 64px;
+  bottom: 44px;
+  display: flex;
+  gap: 12px;
+  padding: 10px 16px 9px;
+  border: 1px solid var(--ink);
+  font: 500 14px/1 var(--f-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Back page */
+.pl-back-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding-top: 18px;
+  font-size: 20px;
+}
+
+/* Phone filler page */
+.pl-filler-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  padding: 26px 0 30px;
+}
+.pl-body {
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.5;
+}
+.pl-filler-img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+}

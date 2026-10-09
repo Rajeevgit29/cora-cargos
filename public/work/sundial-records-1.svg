@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<defs>
+<filter id="grain" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" seed="7"/>
+<feColorMatrix type="saturate" values="0"/>
+<feComponentTransfer><feFuncA type="table" tableValues="0 0.10"/></feComponentTransfer>
+</filter>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="softer" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+<radialGradient id="light" cx="38%" cy="30%" r="85%">
+<stop offset="0" stop-color="#fff3df" stop-opacity="0.22"/>
+<stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+</radialGradient>
+</defs>
+<rect width="1600" height="1200" fill="#E9DCC4"/>
+<g transform="translate(18 26)" opacity="0.45" filter="url(#soft)"><circle cx="960" cy="590" r="350" fill="#000"/></g>
+<circle cx="960" cy="590" r="350" fill="#161412"/><circle cx="960" cy="590" r="338" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="960" cy="590" r="320" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="960" cy="590" r="302" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="960" cy="590" r="284" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="960" cy="590" r="266" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="960" cy="590" r="248" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="960" cy="590" r="230" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="960" cy="590" r="212" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="960" cy="590" r="194" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="960" cy="590" r="176" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="960" cy="590" r="158" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="960" cy="590" r="140" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="960" cy="590" r="122" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="960" cy="590" r="104" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="960" cy="590" r="86" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="960" cy="590" r="68" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/>
+<circle cx="960" cy="590" r="110" fill="#D2642B"/><circle cx="960" cy="590" r="10" fill="#E9DCC4"/>
+<text x="960" y="560" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="20" letter-spacing="5" fill="#161412">SUNDIAL</text>
+<text x="960" y="640" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="14" letter-spacing="3" fill="#161412">SIDE A · 33⅓</text>
+<g transform="translate(24 30)" opacity="0.5" filter="url(#soft)"><rect x="250" y="240" width="700" height="700" fill="#000"/></g>
+<g transform="translate(250 240) scale(1.1666666666666667)">
+<rect width="600" height="600" fill="#D2642B"/>
+<clipPath id="c250240"><rect width="600" height="600"/></clipPath>
+<g clip-path="url(#c250240)">
+<circle cx="300" cy="360" r="200" fill="#F2C14E"/>
+<rect x="0" y="380" width="600" height="10" fill="#D2642B"/><rect x="0" y="414" width="600" height="13" fill="#D2642B"/><rect x="0" y="448" width="600" height="16" fill="#D2642B"/><rect x="0" y="482" width="600" height="19" fill="#D2642B"/><rect x="0" y="516" width="600" height="22" fill="#D2642B"/><rect x="0" y="550" width="600" height="25" fill="#D2642B"/>
+</g>
+<text x="36" y="70" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="24" letter-spacing="6" fill="#F2C14E">SUNDIAL</text>
+<text x="564" y="566" text-anchor="end" font-family="'Courier New', Courier, monospace" font-size="18" letter-spacing="3" fill="#F2C14E" opacity=".8">SDL-04</text>
+</g>
+<rect width="1600" height="1200" fill="url(#light)"/>
+<rect width="1600" height="1200" filter="url(#grain)"/></svg>

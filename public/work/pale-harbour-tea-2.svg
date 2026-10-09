@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs>
+<filter id="grain" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" seed="7"/>
+<feColorMatrix type="saturate" values="0"/>
+<feComponentTransfer><feFuncA type="table" tableValues="0 0.10"/></feComponentTransfer>
+</filter>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="softer" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+<radialGradient id="light" cx="38%" cy="30%" r="85%">
+<stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+<stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+</radialGradient>
+</defs>
+<rect width="1600" height="1000" fill="#9FB5BC"/>
+<g transform="translate(330 170) rotate(-3)">
+<g transform="translate(18 28)" opacity="0.4" filter="url(#soft)"><rect width="940" height="620" fill="#000"/></g>
+<rect width="940" height="620" fill="#F3EBDD"/>
+<path d="M 0 0 L 470 330 L 940 0" fill="none" stroke="#d8ccb6" stroke-width="4"/>
+<circle cx="470" cy="330" r="62" fill="#B5583C"/>
+<text x="470" y="348" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="48" fill="#F3EBDD">ph</text>
+<rect x="720" y="40" width="160" height="190" fill="#BCD0D6" stroke="#22314A" stroke-width="3" stroke-dasharray="6 5"/>
+<path d="M 800 80 L 820 190 L 780 190 Z" fill="#22314A"/>
+<rect x="760" y="190" width="80" height="12" fill="#22314A"/>
+<text x="60" y="480" font-family="'Courier New', Courier, monospace" font-size="24" letter-spacing="3" fill="#22314A">TO: SOMEONE BY THE SEA</text>
+<text x="60" y="530" font-family="'Courier New', Courier, monospace" font-size="24" letter-spacing="3" fill="#22314A" opacity=".6">LOOSE LEAF · 100 G · FOG</text>
+</g>
+<rect width="1600" height="1000" fill="url(#light)"/>
+<rect width="1600" height="1000" filter="url(#grain)"/></svg>

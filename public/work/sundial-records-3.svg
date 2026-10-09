@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs>
+<filter id="grain" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" seed="7"/>
+<feColorMatrix type="saturate" values="0"/>
+<feComponentTransfer><feFuncA type="table" tableValues="0 0.10"/></feComponentTransfer>
+</filter>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="softer" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+<radialGradient id="light" cx="38%" cy="30%" r="85%">
+<stop offset="0" stop-color="#fff0d0" stop-opacity="0.22"/>
+<stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+</radialGradient>
+</defs>
+<rect width="1600" height="1000" fill="#D2642B"/>
+<g transform="translate(16 24)" opacity="0.45" filter="url(#soft)"><circle cx="800" cy="500" r="430" fill="#000"/></g>
+<circle cx="800" cy="500" r="430" fill="#161412"/><circle cx="800" cy="500" r="418" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="800" cy="500" r="400" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="800" cy="500" r="382" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="800" cy="500" r="364" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="800" cy="500" r="346" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="800" cy="500" r="328" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="800" cy="500" r="310" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="800" cy="500" r="292" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="800" cy="500" r="274" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="800" cy="500" r="256" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="800" cy="500" r="238" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="800" cy="500" r="220" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="800" cy="500" r="202" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/><circle cx="800" cy="500" r="184" fill="none" stroke="#fff" stroke-opacity="0.06" stroke-width="2"/><circle cx="800" cy="500" r="166" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="2"/><circle cx="800" cy="500" r="148" fill="none" stroke="#fff" stroke-opacity="0.04" stroke-width="2"/>
+<circle cx="800" cy="500" r="180" fill="#F2C14E"/>
+<path d="M 620 500 A 180 180 0 0 1 980 500 Z" fill="#D2642B"/>
+<circle cx="800" cy="500" r="14" fill="#161412"/>
+<text x="800" y="580" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="30" letter-spacing="8" fill="#161412">SUNDIAL</text>
+<text x="800" y="620" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="18" letter-spacing="4" fill="#161412">RELEASED AT DUSK · SIDE A</text>
+<rect width="1600" height="1000" fill="url(#light)"/>
+<rect width="1600" height="1000" filter="url(#grain)"/></svg>

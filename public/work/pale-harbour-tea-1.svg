@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<defs>
+<filter id="grain" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" seed="7"/>
+<feColorMatrix type="saturate" values="0"/>
+<feComponentTransfer><feFuncA type="table" tableValues="0 0.10"/></feComponentTransfer>
+</filter>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="softer" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+<radialGradient id="light" cx="38%" cy="30%" r="85%">
+<stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+<stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+</radialGradient>
+</defs><defs><linearGradient id="tinshade" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".25"/><stop offset=".25" stop-color="#fff" stop-opacity=".25"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient></defs>
+<rect width="1600" height="1200" fill="#BCD0D6"/>
+<rect y="920" width="1600" height="280" fill="#A9BEC4"/>
+<g transform="translate(260 420)">
+<ellipse cx="150" cy="520" rx="170" ry="34" fill="#000" opacity=".3" filter="url(#softer)"/>
+<rect x="0" y="20" width="300" height="500" fill="#22314A"/>
+<ellipse cx="150" cy="520" rx="150" ry="26" fill="#22314A"/>
+<rect x="0" y="20" width="300" height="500" fill="url(#tinshade)"/>
+<ellipse cx="150" cy="20" rx="150" ry="26" fill="#d9d2c4"/>
+<ellipse cx="150" cy="16" rx="150" ry="26" fill="#ece6da"/>
+<rect x="22" y="166.4" width="256" height="228.8" fill="#F3EBDD"/>
+<rect x="196" y="180.4" width="66" height="78" fill="none" stroke="#B5583C" stroke-width="3" stroke-dasharray="5 4"/>
+<circle cx="229" cy="219.4" r="20" fill="#B5583C"/>
+<text x="40" y="218.4" font-family="'Courier New', Courier, monospace" font-size="15" letter-spacing="2" fill="#22314A">PALE HARBOUR</text>
+<text x="38" y="286.4" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="46" fill="#22314A">Fog</text>
+<path d="M 40 316.4 q 20 -10 40 0 t 40 0 t 40 0 t 40 0" fill="none" stroke="#22314A" stroke-width="2" opacity=".6"/>
+</g>
+<g transform="translate(650 340)">
+<ellipse cx="150" cy="600" rx="170" ry="34" fill="#000" opacity=".3" filter="url(#softer)"/>
+<rect x="0" y="20" width="300" height="580" fill="#F3EBDD"/>
+<ellipse cx="150" cy="600" rx="150" ry="26" fill="#F3EBDD"/>
+<rect x="0" y="20" width="300" height="580" fill="url(#tinshade)"/>
+<ellipse cx="150" cy="20" rx="150" ry="26" fill="#d9d2c4"/>
+<ellipse cx="150" cy="16" rx="150" ry="26" fill="#ece6da"/>
+<rect x="22" y="192" width="256" height="264" fill="#E7DCC8"/>
+<rect x="196" y="206" width="66" height="78" fill="none" stroke="#B5583C" stroke-width="3" stroke-dasharray="5 4"/>
+<circle cx="229" cy="245" r="20" fill="#B5583C"/>
+<text x="40" y="244" font-family="'Courier New', Courier, monospace" font-size="15" letter-spacing="2" fill="#22314A">PALE HARBOUR</text>
+<text x="38" y="312" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="46" fill="#22314A">Tide</text>
+<path d="M 40 342 q 20 -10 40 0 t 40 0 t 40 0 t 40 0" fill="none" stroke="#22314A" stroke-width="2" opacity=".6"/>
+</g>
+<g transform="translate(1040 460)">
+<ellipse cx="150" cy="480" rx="170" ry="34" fill="#000" opacity=".3" filter="url(#softer)"/>
+<rect x="0" y="20" width="300" height="460" fill="#B5583C"/>
+<ellipse cx="150" cy="480" rx="150" ry="26" fill="#B5583C"/>
+<rect x="0" y="20" width="300" height="460" fill="url(#tinshade)"/>
+<ellipse cx="150" cy="20" rx="150" ry="26" fill="#d9d2c4"/>
+<ellipse cx="150" cy="16" rx="150" ry="26" fill="#ece6da"/>
+<rect x="22" y="153.6" width="256" height="211.2" fill="#F3EBDD"/>
+<rect x="196" y="167.6" width="66" height="78" fill="none" stroke="#B5583C" stroke-width="3" stroke-dasharray="5 4"/>
+<circle cx="229" cy="206.6" r="20" fill="#B5583C"/>
+<text x="40" y="205.6" font-family="'Courier New', Courier, monospace" font-size="15" letter-spacing="2" fill="#22314A">PALE HARBOUR</text>
+<text x="38" y="273.6" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="46" fill="#22314A">Ember</text>
+<path d="M 40 303.6 q 20 -10 40 0 t 40 0 t 40 0 t 40 0" fill="none" stroke="#22314A" stroke-width="2" opacity=".6"/>
+</g>
+<rect width="1600" height="1200" fill="url(#light)"/>
+<rect width="1600" height="1200" filter="url(#grain)"/></svg>

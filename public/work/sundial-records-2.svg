@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs>
+<filter id="grain" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" seed="7"/>
+<feColorMatrix type="saturate" values="0"/>
+<feComponentTransfer><feFuncA type="table" tableValues="0 0.10"/></feComponentTransfer>
+</filter>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="softer" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+<radialGradient id="light" cx="38%" cy="30%" r="85%">
+<stop offset="0" stop-color="#ffe9c9" stop-opacity="0.22"/>
+<stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+</radialGradient>
+</defs>
+<rect width="1600" height="1000" fill="#2A2522"/>
+<g transform="translate(10 16)" opacity="0.4" filter="url(#soft)"><rect x="160" y="110" width="620" height="370" fill="#000"/></g><g>
+<g transform="translate(160 110) scale(0.6166666666666667)">
+<rect width="600" height="600" fill="#D2642B"/>
+<clipPath id="c160110"><rect width="600" height="600"/></clipPath>
+<g clip-path="url(#c160110)">
+<circle cx="300" cy="300" r="200" fill="#F2C14E"/>
+<rect x="0" y="320" width="600" height="10" fill="#D2642B"/><rect x="0" y="354" width="600" height="13" fill="#D2642B"/><rect x="0" y="388" width="600" height="16" fill="#D2642B"/><rect x="0" y="422" width="600" height="19" fill="#D2642B"/>
+</g>
+<text x="36" y="70" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="24" letter-spacing="6" fill="#F2C14E">SUNDIAL</text>
+<text x="564" y="566" text-anchor="end" font-family="'Courier New', Courier, monospace" font-size="18" letter-spacing="3" fill="#F2C14E" opacity=".8">SDL-03</text>
+</g></g><g transform="translate(550 110)"><rect width="230" height="370" fill="#D2642B" opacity=".92"/><text x="24" y="60" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="40" fill="#F2C14E">Dawn</text><text x="24" y="330" font-family="'Courier New', Courier, monospace" font-size="14" letter-spacing="2" fill="#F2C14E">VOL. 01</text></g><g transform="translate(10 16)" opacity="0.4" filter="url(#soft)"><rect x="820" y="110" width="620" height="370" fill="#000"/></g><g>
+<g transform="translate(820 110) scale(0.6166666666666667)">
+<rect width="600" height="600" fill="#161412"/>
+<clipPath id="c820110"><rect width="600" height="600"/></clipPath>
+<g clip-path="url(#c820110)">
+<circle cx="300" cy="420" r="200" fill="#D2642B"/>
+<rect x="0" y="440" width="600" height="10" fill="#161412"/><rect x="0" y="474" width="600" height="13" fill="#161412"/><rect x="0" y="508" width="600" height="16" fill="#161412"/><rect x="0" y="542" width="600" height="19" fill="#161412"/><rect x="0" y="576" width="600" height="22" fill="#161412"/>
+</g>
+<text x="36" y="70" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="24" letter-spacing="6" fill="#D2642B">SUNDIAL</text>
+<text x="564" y="566" text-anchor="end" font-family="'Courier New', Courier, monospace" font-size="18" letter-spacing="3" fill="#D2642B" opacity=".8">SDL-04</text>
+</g></g><g transform="translate(1210 110)"><rect width="230" height="370" fill="#161412" opacity=".92"/><text x="24" y="60" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="40" fill="#D2642B">Noon</text><text x="24" y="330" font-family="'Courier New', Courier, monospace" font-size="14" letter-spacing="2" fill="#D2642B">VOL. 02</text></g><g transform="translate(10 16)" opacity="0.4" filter="url(#soft)"><rect x="160" y="520" width="620" height="370" fill="#000"/></g><g>
+<g transform="translate(160 520) scale(0.6166666666666667)">
+<rect width="600" height="600" fill="#F2C14E"/>
+<clipPath id="c160520"><rect width="600" height="600"/></clipPath>
+<g clip-path="url(#c160520)">
+<circle cx="300" cy="520" r="200" fill="#161412"/>
+<rect x="0" y="540" width="600" height="10" fill="#F2C14E"/><rect x="0" y="574" width="600" height="13" fill="#F2C14E"/><rect x="0" y="608" width="600" height="16" fill="#F2C14E"/><rect x="0" y="642" width="600" height="19" fill="#F2C14E"/><rect x="0" y="676" width="600" height="22" fill="#F2C14E"/><rect x="0" y="710" width="600" height="25" fill="#F2C14E"/>
+</g>
+<text x="36" y="70" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="24" letter-spacing="6" fill="#161412">SUNDIAL</text>
+<text x="564" y="566" text-anchor="end" font-family="'Courier New', Courier, monospace" font-size="18" letter-spacing="3" fill="#161412" opacity=".8">SDL-05</text>
+</g></g><g transform="translate(550 520)"><rect width="230" height="370" fill="#F2C14E" opacity=".92"/><text x="24" y="60" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="40" fill="#161412">Dusk</text><text x="24" y="330" font-family="'Courier New', Courier, monospace" font-size="14" letter-spacing="2" fill="#161412">VOL. 03</text></g><g transform="translate(10 16)" opacity="0.4" filter="url(#soft)"><rect x="820" y="520" width="620" height="370" fill="#000"/></g><g>
+<g transform="translate(820 520) scale(0.6166666666666667)">
+<rect width="600" height="600" fill="#E9DCC4"/>
+<clipPath id="c820520"><rect width="600" height="600"/></clipPath>
+<g clip-path="url(#c820520)">
+<circle cx="300" cy="200" r="200" fill="#D2642B"/>
+<rect x="0" y="220" width="600" height="10" fill="#E9DCC4"/><rect x="0" y="254" width="600" height="13" fill="#E9DCC4"/><rect x="0" y="288" width="600" height="16" fill="#E9DCC4"/><rect x="0" y="322" width="600" height="19" fill="#E9DCC4"/><rect x="0" y="356" width="600" height="22" fill="#E9DCC4"/><rect x="0" y="390" width="600" height="25" fill="#E9DCC4"/><rect x="0" y="424" width="600" height="28" fill="#E9DCC4"/>
+</g>
+<text x="36" y="70" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="24" letter-spacing="6" fill="#D2642B">SUNDIAL</text>
+<text x="564" y="566" text-anchor="end" font-family="'Courier New', Courier, monospace" font-size="18" letter-spacing="3" fill="#D2642B" opacity=".8">SDL-02</text>
+</g></g><g transform="translate(1210 520)"><rect width="230" height="370" fill="#E9DCC4" opacity=".92"/><text x="24" y="60" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="40" fill="#D2642B">Night</text><text x="24" y="330" font-family="'Courier New', Courier, monospace" font-size="14" letter-spacing="2" fill="#D2642B">VOL. 04</text></g>
+<rect width="1600" height="1000" fill="url(#light)"/>
+<rect width="1600" height="1000" filter="url(#grain)"/></svg>

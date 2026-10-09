@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<defs>
+<filter id="grain" x="0" y="0" width="100%" height="100%">
+<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" seed="7"/>
+<feColorMatrix type="saturate" values="0"/>
+<feComponentTransfer><feFuncA type="table" tableValues="0 0.10"/></feComponentTransfer>
+</filter>
+<filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="22"/></filter>
+<filter id="softer" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+<radialGradient id="light" cx="38%" cy="30%" r="85%">
+<stop offset="0" stop-color="#eaffef" stop-opacity="0.22"/>
+<stop offset="1" stop-color="#000" stop-opacity="0.22"/>
+</radialGradient>
+</defs>
+<rect width="1600" height="1200" fill="#2E4A3C"/>
+<g transform="translate(22 40)" opacity="0.5" filter="url(#soft)"><rect x="200" y="150" width="1200" height="860" rx="16" fill="#000"/></g>
+<g transform="translate(200 150)">
+<rect width="1200" height="860" rx="16" fill="#EFE9DC"/>
+<rect width="1200" height="56" rx="16" fill="#DCD4C3"/><rect y="40" width="1200" height="16" fill="#DCD4C3"/>
+<circle cx="34" cy="28" r="9" fill="#E07A5F"/><circle cx="62" cy="28" r="9" fill="#F2C14E"/><circle cx="90" cy="28" r="9" fill="#7FA88E"/>
+<rect x="380" y="16" width="440" height="24" rx="12" fill="#EFE9DC"/>
+<text x="60" y="120" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="22" letter-spacing="3" fill="#2E4A3C">NORTHBANK LIBRARY</text>
+<text x="840" y="120" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="20" fill="#1F1F1F">Catalogue    Events    Visit</text>
+<line x1="60" y1="146" x2="1140" y2="146" stroke="#1F1F1F" stroke-width="2"/>
+<text x="56" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="128" fill="#1F1F1F">Borrow the city.</text>
+<rect x="60" y="350" width="560" height="70" rx="35" fill="none" stroke="#1F1F1F" stroke-width="3"/>
+<text x="96" y="396" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="24" fill="#1F1F1F" opacity=".55">Search books, rooms, events…</text>
+<rect x="640" y="350" width="200" height="70" rx="35" fill="#E07A5F"/>
+<text x="740" y="396" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="24" fill="#EFE9DC">Search</text>
+<rect x="60" y="480" width="160" height="230" fill="#E07A5F"/><rect x="60" y="726" width="100" height="14" fill="#1F1F1F" opacity=".7"/><rect x="60" y="752" width="90" height="12" fill="#1F1F1F" opacity=".35"/><rect x="242" y="480" width="160" height="230" fill="#F2C14E"/><rect x="242" y="726" width="120" height="14" fill="#1F1F1F" opacity=".7"/><rect x="242" y="752" width="90" height="12" fill="#1F1F1F" opacity=".35"/><rect x="424" y="480" width="160" height="230" fill="#7FA88E"/><rect x="424" y="726" width="140" height="14" fill="#1F1F1F" opacity=".7"/><rect x="424" y="752" width="90" height="12" fill="#1F1F1F" opacity=".35"/><rect x="606" y="480" width="160" height="230" fill="#3D5A80"/><rect x="606" y="726" width="100" height="14" fill="#1F1F1F" opacity=".7"/><rect x="606" y="752" width="90" height="12" fill="#1F1F1F" opacity=".35"/><rect x="788" y="480" width="160" height="230" fill="#C9A27E"/><rect x="788" y="726" width="120" height="14" fill="#1F1F1F" opacity=".7"/><rect x="788" y="752" width="90" height="12" fill="#1F1F1F" opacity=".35"/><rect x="970" y="480" width="160" height="230" fill="#8E6C8A"/><rect x="970" y="726" width="140" height="14" fill="#1F1F1F" opacity=".7"/><rect x="970" y="752" width="90" height="12" fill="#1F1F1F" opacity=".35"/>
+</g>
+<rect width="1600" height="1200" fill="url(#light)"/>
+<rect width="1600" height="1200" filter="url(#grain)"/></svg>
