@@ -4,7 +4,8 @@ import { editionDate } from '../lib/env.js';
 import { keepHyphenated, ProjectImage, ReadLink, SampleTag } from './Editorial.jsx';
 
 const INDEX = [
-  { id: 'work', label: 'Selected Work', page: 'p. 2' },
+  { id: 'websites', label: 'Websites', page: 'p. 2' },
+  { id: 'work', label: 'Selected Work', page: 'p. 4' },
   { id: 'studio', label: 'The Studio', page: 'p. 6' },
   { id: 'services', label: 'Services', page: 'p. 8' },
   { id: 'contact', label: 'Classifieds', page: 'p. 10' },
@@ -82,7 +83,7 @@ const FrontPage = forwardRef(function FrontPage({ vtSlug, onOpen, onNavigate }, 
               ))}
             </div>
             <div className="lead__actions">
-              <a className="btn-ink" href="#work" onClick={go('work')}>
+              <a className="btn-ink" href="#websites" onClick={go('websites')}>
                 See the work <span aria-hidden="true">↓</span>
               </a>
               <a className="text-link" href="#contact" onClick={go('contact')}>

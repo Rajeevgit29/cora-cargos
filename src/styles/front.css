@@ -395,8 +395,8 @@
     flex-basis: 40px;
   }
   .index-row {
-    justify-content: space-between;
-    column-gap: 10px;
+    justify-content: center;
+    column-gap: 18px;
     font-size: 10px;
     letter-spacing: 0.08em;
   }

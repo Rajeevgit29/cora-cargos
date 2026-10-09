@@ -10,6 +10,7 @@ import { initReveals } from './lib/reveal.js';
 import NavBar from './components/NavBar.jsx';
 import FrontPage from './components/FrontPage.jsx';
 import SelectedWork from './components/SelectedWork.jsx';
+import Websites from './components/Websites.jsx';
 import Studio from './components/Studio.jsx';
 import Services from './components/Services.jsx';
 import Contact from './components/Contact.jsx';
@@ -20,7 +21,7 @@ import PrintPlates from './intro/PrintPlates.jsx';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SECTIONS = ['work', 'studio', 'services', 'contact'];
+const SECTIONS = ['websites', 'work', 'studio', 'services', 'contact'];
 const NAV_OFFSET = 56;
 
 export default function App() {
@@ -212,7 +213,8 @@ export default function App() {
             {intro && <div ref={spacerRef} className="pin__spacer" aria-hidden="true" />}
           </div>
 
-          <SelectedWork ref={workRef} vtSlug={vtSlug} onOpen={openProject} />
+          <Websites ref={workRef} />
+          <SelectedWork vtSlug={vtSlug} onOpen={openProject} />
           <Studio />
           <Services onEnquire={enquireAbout} />
           <Contact enquiryType={enquiryType} onTypeChange={setEnquiryType} />

@@ -216,6 +216,10 @@
   object-fit: cover;
   margin-bottom: 9px;
 }
+.pl-thumb--site img {
+  object-position: 50% 0%; /* the top of each site's screenshot */
+  border: 1px solid var(--ink);
+}
 .pl-mono {
   filter: grayscale(1) contrast(1.08);
 }

@@ -37,6 +37,11 @@ export default function Footer({ onNavigate, onReplay }) {
                 </a>
               </li>
               <li>
+                <a className="text-link" href="#websites" onClick={go('websites')}>
+                  Websites
+                </a>
+              </li>
+              <li>
                 <a className="text-link" href="#work" onClick={go('work')}>
                   Selected Work
                 </a>

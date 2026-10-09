@@ -1,7 +1,7 @@
 import { site } from '../content.js';
 
 const LINKS = [
-  { id: 'work', label: 'Work' },
+  { id: 'websites', label: 'Work', also: ['work'] }, // web work first, then the case studies
   { id: 'studio', label: 'Studio' },
   { id: 'services', label: 'Services' },
   { id: 'contact', label: 'Contact' },
@@ -23,7 +23,7 @@ export default function NavBar({ visible, active, onNavigate }) {
           <ul className="nav__links">
             {LINKS.map((l) => (
               <li key={l.id}>
-                <a href={`#${l.id}`} onClick={go(l.id)} aria-current={active === l.id ? 'true' : undefined}>
+                <a href={`#${l.id}`} onClick={go(l.id)} aria-current={active === l.id || l.also?.includes(active) ? 'true' : undefined}>
                   {l.label}
                 </a>
               </li>

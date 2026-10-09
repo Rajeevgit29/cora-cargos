@@ -53,6 +53,107 @@ export const frontPage = {
 };
 
 /*
+ * WEBSITES — real, live sites designed by the studio (shown before the
+ * case-study samples). Screenshots live in /public/work/web. Copy here only
+ * describes what each site is; add outcomes only if they are verified.
+ *   layout: 'lead' | 'column' | 'feature' (with variants) | 'third'
+ *   domain: shown in the browser bar; leave null for preview hosting
+ */
+export const websites = {
+  section: 'Section A — On the Web',
+  headline: 'Websites, designed here and',
+  headlineEm: 'live now.',
+  lede: 'A selection of sites designed by the studio. Every one is live — open any of them in a new tab and look around.',
+  items: [
+    {
+      slug: 'splayed',
+      client: 'Splayed',
+      kind: 'Product website',
+      sector: 'Media search app',
+      headline: 'Find any moment in your media.',
+      summary:
+        'Website for Splayed, a private, on-device media search app for Apple Silicon that finds the exact moment in video, audio and images by what is inside them — from the app, Premiere Pro, DaVinci Resolve and AI assistants.',
+      url: 'https://splayed.ai/',
+      domain: 'splayed.ai',
+      image: '/work/web/splayed.webp',
+      phone: '/work/web/splayed-phone.webp',
+      layout: 'lead',
+    },
+    {
+      slug: 'symbiotes',
+      client: 'Symbiotes',
+      kind: 'Agency website',
+      sector: 'Media agency',
+      headline: 'Attention is the whole game now.',
+      summary:
+        'Website for Symbiotes, a media agency for brands that need to be watched, not just seen — strategy, creative and production across video, social, static and AI-assisted work.',
+      url: 'https://symbiotes-pied.vercel.app/',
+      domain: null,
+      image: '/work/web/symbiotes.webp',
+      layout: 'column',
+    },
+    {
+      slug: 'genc',
+      client: 'Gen C by AEOS',
+      kind: 'Landing page & funnel',
+      sector: 'Personal brand strategy',
+      headline: 'Find the niche only you can own.',
+      summary:
+        'A quiz-led funnel for founders, experts and marketers: six questions in five minutes produce a personal niche document. We designed it in four directions — each one is live.',
+      url: 'https://html-link-converter.ashmitknayak.workers.dev/24668ytt/#strategy',
+      domain: null,
+      image: '/work/web/genc-v1.webp',
+      layout: 'feature',
+      variants: [
+        { label: 'Direction 01', url: 'https://html-link-converter.ashmitknayak.workers.dev/24668ytt/#strategy', image: '/work/web/genc-v1.webp' },
+        { label: 'Direction 02', url: 'https://html-link-converter.ashmitknayak.workers.dev/bz726p8h/', image: '/work/web/genc-v2.webp' },
+        { label: 'Direction 03', url: 'https://html-link-converter.ashmitknayak.workers.dev/9vpwx4bj/', image: '/work/web/genc-v3.webp' },
+        { label: 'Direction 04', url: 'https://html-link-converter.ashmitknayak.workers.dev/kjc45jks/', image: '/work/web/genc-v4.webp' },
+      ],
+    },
+    {
+      slug: 'ascent',
+      client: 'Ascent',
+      kind: 'Event website',
+      sector: 'Campus festival',
+      headline: 'Escape the ordinary.',
+      summary:
+        'Website for Ascent 2026, a two-day campus festival of twenty-four events for builders, tinkerers and the genuinely curious — with a live countdown, event listings, sponsors and registration.',
+      url: 'https://darshannahata5555-cpu.github.io/ascent-website/',
+      domain: null,
+      image: '/work/web/ascent.webp',
+      layout: 'third',
+    },
+    {
+      slug: 'supermatrix',
+      client: 'SuperMatrix',
+      kind: 'Financial services website',
+      sector: 'Mutual fund distribution',
+      headline: 'Making mutual fund investing simple.',
+      summary:
+        'Website for SuperMatrix, an AMFI-registered mutual fund distributor in Mumbai, bringing mutual funds, SIPs, SWPs, ELSS, PMS and goal-based investing together in one place.',
+      url: 'https://supermatrix.in/',
+      domain: 'supermatrix.in',
+      image: '/work/web/supermatrix.webp',
+      layout: 'third',
+    },
+    {
+      slug: 'acepro',
+      client: 'AcePro Advisors',
+      kind: 'Financial services website',
+      sector: 'Portfolio management',
+      headline: 'Purposeful investing. Enduring wealth.',
+      summary:
+        'Website for AcePro Advisors, a SEBI-registered portfolio manager, presenting its research-led strategies across PMS, AIF and fund of funds, with a dedicated investor corner.',
+      url: 'https://darshannahata5555-cpu.github.io/acepro-website/',
+      domain: null,
+      image: '/work/web/acepro.webp',
+      layout: 'third',
+    },
+  ],
+};
+
+/*
  * PROJECTS
  * layout: how the project sits in the Selected Work grid
  *   'lead'   – large feature story         'column' – narrow column story
@@ -236,7 +337,7 @@ export const projects = [
 ];
 
 export const studio = {
-  section: 'Section B — The Studio',
+  section: 'Section C — The Studio',
   headline: 'We work like a newsroom: curious, quick on our feet and fussy about the details.',
   image: '/work/studio.svg',
   imageAlt: 'Sample artwork: a top-down studio desk with paper proofs, swatches, a pencil and a coffee cup.',
@@ -265,7 +366,7 @@ export const studio = {
 };
 
 export const services = {
-  section: 'Section C — The Directory',
+  section: 'Section D — The Directory',
   headline: 'Directory of Services',
   intro: 'Commission the studio for a single piece or a complete edition. Every engagement is led by a senior designer from brief to delivery.',
   items: [
@@ -298,7 +399,7 @@ export const services = {
 };
 
 export const contact = {
-  section: 'Section D — Classifieds',
+  section: 'Section E — Classifieds',
   kicker: 'Classified — Notice to all readers',
   headline: 'Your next big story starts here.',
   body: 'Wanted: brands, founders and organisations with an idea worth printing. Send a few lines about what you are making, when you need it and what a good result looks like. We will reply with next steps.',

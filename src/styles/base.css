@@ -350,11 +350,13 @@ h4 {
   transform: none;
 }
 .reveal-img .media,
+.reveal-img .browser__view,
 .reveal-img > img {
   clip-path: inset(0 0 100% 0);
   transition: clip-path 1.15s var(--ease-out);
 }
 .reveal-img.is-in .media,
+.reveal-img.is-in .browser__view,
 .reveal-img.is-in > img {
   clip-path: inset(0 0 0 0);
 }
@@ -437,6 +439,7 @@ h4 {
   }
   .reveal,
   .reveal-img .media,
+  .reveal-img .browser__view,
   .reveal-img > img {
     opacity: 1;
     transform: none;

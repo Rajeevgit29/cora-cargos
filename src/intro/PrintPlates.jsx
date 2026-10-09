@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
-import { frontPage, projects, services, site, studio } from '../content.js';
+import { frontPage, projects, services, site, studio, websites } from '../content.js';
 import { editionDate } from '../lib/env.js';
 import { keepHyphenated } from '../components/Editorial.jsx';
 
@@ -95,10 +95,11 @@ const PrintPlates = forwardRef(function PrintPlates(_, ref) {
         <div className="pl-index">
           {[
             ['01', 'Front Page', frontPage.headline, '1'],
-            ['02', 'Selected Work', `${projects.length} stories from the studio`, '2'],
-            ['03', 'The Studio', 'Who we are and how we work', '6'],
-            ['04', 'Services', `A directory of ${services.items.length} disciplines`, '8'],
-            ['05', 'Classifieds', 'Your next big story starts here', '10'],
+            ['02', 'Websites', `${websites.items.length} sites, designed and live`, '2'],
+            ['03', 'Selected Work', `${projects.length} stories from the studio`, '4'],
+            ['04', 'The Studio', 'Who we are and how we work', '6'],
+            ['05', 'Services', `A directory of ${services.items.length} disciplines`, '8'],
+            ['06', 'Classifieds', 'Your next big story starts here', '10'],
           ].map(([n, title, dek, page]) => (
             <div className="pl-index__row" key={n}>
               <span className="pl-index__n">{n}</span>
@@ -110,11 +111,11 @@ const PrintPlates = forwardRef(function PrintPlates(_, ref) {
           ))}
         </div>
         <div className="pl-thumbs">
-          {projects.slice(0, 6).map((p) => (
-            <div className="pl-thumb" key={p.slug}>
-              <img src={p.image} alt="" className={p.treatment !== 'color' ? 'pl-mono' : ''} />
-              <span className="pl-thumb__client">{p.client}</span>
-              <span className="pl-thumb__head">{p.headline}</span>
+          {websites.items.slice(0, 6).map((w) => (
+            <div className="pl-thumb pl-thumb--site" key={w.slug}>
+              <img src={w.image} alt="" />
+              <span className="pl-thumb__client">{w.client}</span>
+              <span className="pl-thumb__head">{w.headline}</span>
             </div>
           ))}
         </div>
