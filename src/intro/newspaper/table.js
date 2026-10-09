@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { DESK } from './config.js';
 export { loadImage } from '../../lib/images.js';
+import { createProps } from './props.js';
 
 /*
  * The desk the newspaper rests on. Two interchangeable versions:
@@ -123,12 +124,29 @@ export function createLightMap(photo) {
 
 /* ── Procedural walnut desk ───────────────────────────────────────────── */
 
-export function createProceduralDesk({ wood, detail }, uniforms, maxAnisotropy) {
+export function createProceduralDesk({ wood, detail }, uniforms, maxAnisotropy, { compact = false } = {}) {
   const cfg = DESK.procedural;
   const map = imageTexture(wood, { anisotropy: maxAnisotropy });
+  // The desk extends past the texture with mirrored tiles, so tall phone
+  // views never see its edge. One tile = the configured size.
+  const TILES = 3;
+  map.wrapS = map.wrapT = THREE.MirroredRepeatWrapping;
+  map.repeat.set(TILES, TILES);
+  map.offset.set(-(TILES - 1) / 2, -(TILES - 1) / 2);
   const detailMap = detail ? imageTexture(detail, { srgb: false, repeat: true, anisotropy: maxAnisotropy }) : null;
-  const material = new THREE.MeshStandardMaterial({ map, roughness: 0.64, metalness: 0 });
+  // Satin oil finish: a soft clearcoat sheen over wood whose pores are rougher.
+  const material = new THREE.MeshPhysicalMaterial({
+    map,
+    roughness: detailMap ? 1.5 : 0.75, // × pore map (mean ≈ 0.5) → satin ≈ 0.75, pores rougher
+    roughnessMap: detailMap,
+    metalness: 0,
+    specularIntensity: 0.32, // oiled wood: a soft sheen, never a lacquer glare
+    clearcoat: 0.05,
+    clearcoatRoughness: 0.65,
+    envMapIntensity: 0.25,
+  });
   const repeat = new THREE.Vector2(cfg.size[0] / 0.62, cfg.size[1] / 0.62);
+  if (detailMap) detailMap.repeat.copy(repeat).multiplyScalar(TILES); // pore roughness tiles with the pore detail
   material.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, uniforms, { uDetail: { value: detailMap }, uDetailRepeat: { value: repeat } });
     shader.fragmentShader = shader.fragmentShader
@@ -150,13 +168,13 @@ export function createProceduralDesk({ wood, detail }, uniforms, maxAnisotropy) 
       )
       .replace('#include <dithering_fragment>', '#include <dithering_fragment>\ngl_FragColor.rgb *= 1.0 - 0.45 * uFade;');
   };
-  const desk = new THREE.Mesh(new THREE.PlaneGeometry(cfg.size[0], cfg.size[1]), material);
+  const desk = new THREE.Mesh(new THREE.PlaneGeometry(cfg.size[0] * TILES, cfg.size[1] * TILES), material);
   desk.rotation.x = -Math.PI / 2;
   desk.position.set(cfg.centre[0], 0, cfg.centre[1]);
   desk.receiveShadow = true;
 
   const group = new THREE.Group();
-  group.add(desk, createProps());
+  group.add(desk, createProps({ compact }));
   return { group };
 }
 
@@ -171,20 +189,54 @@ export function createWindowGobo() {
   c.width = c.height = S;
   const ctx = c.getContext('2d');
   const shade = (v) => `rgb(${v},${v},${v})`;
-  ctx.fillStyle = shade(70); // wall bounce outside the window
+  ctx.fillStyle = shade(52); // wall bounce outside the window
   ctx.fillRect(0, 0, S, S);
-  if ('filter' in ctx) ctx.filter = 'blur(2.5px)';
+  if ('filter' in ctx) ctx.filter = 'blur(1.5px)';
   ctx.save();
   ctx.translate(S / 2, S / 2);
   ctx.rotate(-0.14);
   ctx.translate(-S / 2, -S / 2);
   ctx.fillStyle = shade(255);
-  ctx.fillRect(S * 0.03, S * 0.02, S * 0.94, S * 0.96);
-  ctx.fillStyle = shade(118); // glazing bars: gentle, not black
-  ctx.fillRect(S * 0.485, -S, S * 0.03, S * 3);
-  ctx.fillRect(-S, S * 0.36, S * 3, S * 0.024);
-  ctx.fillRect(-S, S * 0.67, S * 3, S * 0.024);
+  ctx.fillRect(S * 0.02, S * 0.02, S * 0.96, S * 0.96);
+  // A multi-pane window: thin muntins every quarter, a heavier middle rail.
+  ctx.fillStyle = shade(70);
+  for (let i = 1; i < 4; i++) {
+    const w = i === 2 ? 0.03 : 0.018;
+    ctx.fillRect(S * (i / 4 - w / 2), -S, S * w, S * 3);
+    ctx.fillRect(-S, S * (i / 4 - w / 2), S * 3, S * w);
+  }
   ctx.restore();
+  // A plant on the sill: soft leaf shadows in one corner of the light.
+  ctx.fillStyle = ctx.strokeStyle = shade(84);
+  if ('filter' in ctx) ctx.filter = 'blur(3px)';
+  let seed = 19;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let b = 0; b < 3; b++) {
+    const x0 = S * (0.0 + b * 0.05);
+    const y0 = S * (1.02 - b * 0.03);
+    const x1 = S * (0.16 + b * 0.09 + rnd() * 0.05);
+    const y1 = S * (0.6 + rnd() * 0.12);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.quadraticCurveTo((x0 + x1) / 2 - S * 0.04, (y0 + y1) / 2, x1, y1);
+    ctx.stroke();
+    for (let i = 0; i < 6; i++) {
+      const t = 0.25 + i * 0.13;
+      const x = x0 + (x1 - x0) * t;
+      const y = y0 + (y1 - y0) * t;
+      const len = S * (0.045 + rnd() * 0.05);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate((i % 2 ? -1 : 1) * (0.7 + rnd() * 0.6) - 0.4);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(len * 0.5, -len * 0.3, len, 0);
+      ctx.quadraticCurveTo(len * 0.5, len * 0.3, 0, 0);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
   ctx.filter = 'none';
   const g = ctx.createRadialGradient(S * 0.5, S * 0.45, S * 0.2, S * 0.5, S * 0.5, S * 0.72);
   g.addColorStop(0, 'rgba(0,0,0,0)');
@@ -212,51 +264,4 @@ export function createContactTexture() {
     ctx.fill();
   }
   return new THREE.CanvasTexture(canvas);
-}
-
-/** The stand-in cup and pencil, placed outside the newspaper's unfolding footprint. */
-export function createProps() {
-  const group = new THREE.Group();
-
-  const pencil = new THREE.Group();
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.021, 0.021, 0.74, 6), new THREE.MeshStandardMaterial({ color: '#2b2824', roughness: 0.5 }));
-  body.rotation.z = Math.PI / 2;
-  const ferrule = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.04, 12), new THREE.MeshStandardMaterial({ color: '#8a7a5c', roughness: 0.35, metalness: 0.6 }));
-  ferrule.rotation.z = Math.PI / 2;
-  ferrule.position.x = -0.39;
-  const wood = new THREE.Mesh(new THREE.ConeGeometry(0.021, 0.085, 6), new THREE.MeshStandardMaterial({ color: '#cfae80', roughness: 0.85 }));
-  wood.rotation.z = -Math.PI / 2;
-  wood.position.x = 0.4125;
-  const lead = new THREE.Mesh(new THREE.ConeGeometry(0.0062, 0.024, 6), new THREE.MeshStandardMaterial({ color: '#2a2a2a', roughness: 0.25, metalness: 0.3 }));
-  lead.rotation.z = -Math.PI / 2;
-  lead.position.x = 0.4435;
-  pencil.add(body, ferrule, wood, lead);
-  pencil.traverse((o) => (o.castShadow = o.receiveShadow = true));
-  pencil.position.set(-0.55, 0.021, 1.3);
-  pencil.rotation.y = 0.5;
-  group.add(pencil);
-
-  const ceramic = new THREE.MeshStandardMaterial({ color: '#efe8dc', roughness: 0.3 });
-  const cup = new THREE.Group();
-  const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.235, 0.022, 64), ceramic);
-  saucer.position.y = 0.011;
-  const wallMat = ceramic.clone();
-  wallMat.side = THREE.DoubleSide;
-  const wall = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.2, 64, 1, true), wallMat);
-  wall.position.y = 0.124;
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.01, 48), ceramic);
-  base.position.y = 0.027;
-  const coffee = new THREE.Mesh(new THREE.CircleGeometry(0.152, 48), new THREE.MeshStandardMaterial({ color: '#24130a', roughness: 0.12 }));
-  coffee.rotation.x = -Math.PI / 2;
-  coffee.position.y = 0.2;
-  const handle = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.014, 12, 32, Math.PI * 1.15), ceramic);
-  handle.position.set(0.17, 0.13, 0);
-  handle.rotation.z = -Math.PI * 0.57;
-  cup.add(saucer, wall, base, coffee, handle);
-  cup.traverse((o) => (o.castShadow = o.receiveShadow = true));
-  cup.position.set(2.24, 0, -1.18);
-  cup.rotation.y = -0.9;
-  group.add(cup);
-
-  return group;
 }

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { SHEET, CAMERA_FOV, DESK } from './config.js';
 import { PaperGeometry } from './PaperGeometry.js';
 import { createPaperMaterial, createPaperUniforms, neutralLightMap } from './paperMaterial.js';
@@ -39,6 +40,16 @@ export class NewspaperScene {
     this.scene = scene;
     this.camera = new THREE.PerspectiveCamera(CAMERA_FOV, 1, 0.05, 60);
 
+    // A soft studio environment, so glaze, glass, metal and the satin desk
+    // pick up believable reflections.
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const room = new RoomEnvironment();
+    this.envMap = pmrem.fromScene(room, 0.04).texture;
+    room.dispose?.();
+    pmrem.dispose();
+    scene.environment = this.envMap;
+    scene.environmentIntensity = 0.35;
+
     this.paperUniforms = createPaperUniforms();
     this.paperUniforms.uPaper.value.set(paperColor);
     this.deskUniforms = createDeskUniforms();
@@ -68,12 +79,12 @@ export class NewspaperScene {
     const { scene, quality } = this;
     // Morning daylight from the upper left, through a window (gobo), plus a
     // low warm fill so shadows stay soft rather than black.
-    scene.add(new THREE.HemisphereLight('#f3eee6', '#3a2617', 0.82));
+    scene.add(new THREE.HemisphereLight('#f3eee6', '#3a2617', 0.5));
     const fill = new THREE.DirectionalLight('#fff0dc', 0.3);
     fill.position.set(3, 2.5, 4);
     scene.add(fill);
 
-    const sun = new THREE.SpotLight('#ffecd4', 2.9, 0, 0.56, 0.55, 0);
+    const sun = new THREE.SpotLight('#ffecd4', 2.9, 0, 0.4, 0.75, 0);
     sun.position.set(-4.8, 5.4, -3.9);
     sun.target.position.set(0.45, 0, 0.25);
     sun.map = createWindowGobo();
@@ -90,7 +101,7 @@ export class NewspaperScene {
     this.paperUniforms.uSunDir.value.copy(sun.position).sub(sun.target.position).normalize();
     this.paperUniforms.uLightMap.value = neutralLightMap();
 
-    const { group } = createProceduralDesk(desk, this.deskUniforms, this.maxAnisotropy);
+    const { group } = createProceduralDesk(desk, this.deskUniforms, this.maxAnisotropy, { compact: quality.compact });
     scene.add(group);
   }
 
@@ -99,7 +110,7 @@ export class NewspaperScene {
     const dir = new THREE.Vector3(...DESK.photo.sun).normalize();
     // Same light balance as the procedural desk; the photograph's own light
     // pattern reaches the paper through the light map.
-    scene.add(new THREE.HemisphereLight('#f3eee6', '#3a2617', 0.82));
+    scene.add(new THREE.HemisphereLight('#f3eee6', '#3a2617', 0.5));
     const fill = new THREE.DirectionalLight('#fff0dc', 0.3);
     fill.position.set(3, 2.5, 4);
     scene.add(fill);
@@ -261,6 +272,7 @@ export class NewspaperScene {
         });
       }
     });
+    this.envMap?.dispose();
     this.renderer.dispose();
   }
 }

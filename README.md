@@ -36,7 +36,8 @@ src/intro/
     layout.js          the handoff mapping between viewport pixels and the sheet
     rasterize.js       a small DOM → canvas printer
     textures.js        paints the outside (cover, contents page) and inside
-    table.js           the desk: projected photograph, or procedural walnut + window gobo + cup and pencil
+    table.js           the desk: projected photograph, or procedural walnut + window/leaf gobo
+    props.js           still life: espresso set, reading glasses, notebook and pencil (desktop and phone layouts)
     Scene.js           three.js scene, lights, camera, render-on-demand
 ```
 

@@ -76,6 +76,8 @@ export default function Intro({ pinRef, frontRef, spacerRef, afterRef, platesRef
   const uiRef = useRef(null);
   const barRef = useRef(null);
   const vignetteRef = useRef(null);
+  const atmosphereRef = useRef(null);
+  const focusRef = useRef(null);
   const [ready, setReady] = useState(false);
   const activeRef = useRef(active);
   const redrawRef = useRef(() => {});
@@ -112,7 +114,11 @@ export default function Intro({ pinRef, frontRef, spacerRef, afterRef, platesRef
         uiRef.current.style.opacity = String(ui);
         uiRef.current.style.visibility = ui < 0.02 ? 'hidden' : '';
       }
-      if (vignetteRef.current) vignetteRef.current.style.opacity = String(1 - span(p, TIMELINE.handoff.vignette, ease.inOutSine));
+      const vignette = String(1 - span(p, TIMELINE.handoff.vignette, ease.inOutSine));
+      if (vignetteRef.current) vignetteRef.current.style.opacity = vignette;
+      if (atmosphereRef.current) atmosphereRef.current.style.opacity = vignette;
+      // Shallow focus belongs to the still photograph; it clears as the paper lifts.
+      if (focusRef.current) focusRef.current.style.opacity = String(1 - span(p, TIMELINE.handoff.focus, ease.inOutSine));
       if (barRef.current) barRef.current.style.transform = `scaleX(${Math.min(1, p / 0.93).toFixed(4)})`;
       callbacks.current.onProgress?.(p);
     };
@@ -280,7 +286,15 @@ export default function Intro({ pinRef, frontRef, spacerRef, afterRef, platesRef
     <div className="stage-track">
       <div ref={stageRef} className={`stage${ready ? ' is-ready' : ''}`} data-state="playing">
         <canvas ref={canvasRef} className="stage__canvas" aria-hidden="true" />
+        <div ref={focusRef} className="stage__focus" aria-hidden="true">
+          <span className="stage__focus-far" />
+          <span className="stage__focus-near" />
+        </div>
         <div ref={vignetteRef} className="stage__vignette" aria-hidden="true" />
+        <div ref={atmosphereRef} className="stage__atmosphere" aria-hidden="true">
+          <span className="stage__haze" />
+          <span className="stage__grain" />
+        </div>
         <p className="stage__loader" aria-hidden="true">
           Printing today’s edition…
         </p>

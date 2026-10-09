@@ -37,6 +37,7 @@ export const TIMELINE = {
     creases: [0.83, 0.95], // crease shading fades as the page "becomes" the website
     vignette: [0.7, 0.92],
     desk: [0.72, 0.93], // the desk darkens and softens as the page fills the frame
+    focus: [0.03, 0.14], // the still-photo depth of field clears as the paper lifts
     controls: [0.8, 0.9],
     fade: [0.955, 0.99], // canvas dissolves into the live HTML
     nav: 0.97,

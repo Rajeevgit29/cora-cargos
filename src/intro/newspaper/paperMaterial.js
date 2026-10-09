@@ -41,6 +41,7 @@ export function createPaperMaterial({ map, side, uniforms }) {
     side,
     roughness: 0.9,
     metalness: 0,
+    envMapIntensity: 0.35, // matte stock: only a hint of the room
   });
   const W = SHEET.width.toFixed(3);
   const H = SHEET.height.toFixed(3);
@@ -78,7 +79,7 @@ export function createPaperMaterial({ map, side, uniforms }) {
           float press = ppNoise(sheet * 16.0) * 0.5 + ppNoise(sheet * 52.0) * 0.5;
           diffuseColor.rgb = mix(diffuseColor.rgb, uPaper, ink * (0.012 + 0.045 * press) * uAge);
           // Restrained tonal variation in the stock itself.
-          diffuseColor.rgb *= 1.0 + (ppNoise(sheet * 2.3 + 4.0) - 0.5) * 0.05 * uAge;
+          diffuseColor.rgb *= 1.0 + (ppNoise(sheet * 2.3 + 4.0) - 0.5) * 0.025 * uAge;
           // Creases on the real fold lines: a fine dark valley with a soft
           // shoulder, and a faint highlight where the ridge catches light.
           float da = abs(vMapUv.x - 0.5) * ${W};

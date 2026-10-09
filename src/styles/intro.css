@@ -54,6 +54,57 @@
   pointer-events: none;
   background: radial-gradient(120% 95% at 50% 42%, transparent 52%, rgba(20, 12, 6, 0.42) 100%);
 }
+/* Photographic finish: shallow depth of field at the far and near edges of
+   the desk, warm window haze and fine film grain. All fade with progress. */
+.stage__focus,
+.stage__atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.stage__focus-far,
+.stage__focus-near {
+  position: absolute;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(2.6px);
+  -webkit-backdrop-filter: blur(2.6px);
+}
+.stage__focus-far {
+  top: 0;
+  height: 30%;
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+}
+.stage__focus-near {
+  bottom: 0;
+  height: 13%;
+  mask-image: linear-gradient(to top, #000 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 100%);
+}
+.stage__haze {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(55% 45% at 12% 6%, rgba(255, 214, 160, 0.2), transparent 70%),
+    linear-gradient(118deg, rgba(255, 220, 170, 0.07) 0%, transparent 38%);
+  mix-blend-mode: screen;
+}
+.stage__grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+}
+@media (max-width: 760px) {
+  /* Keep phones light: no backdrop blur. */
+  .stage__focus {
+    display: none;
+  }
+}
+
 .stage__loader {
   position: absolute;
   inset: 0;
